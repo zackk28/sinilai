@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #f8f8ff;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sinilai.controller.LoginController">
+
+   <!-- Center Content -->
+   <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+      <!-- Form Card -->
+      <VBox maxWidth="500" prefWidth="500" spacing="10" style="-fx-background-color: #DDDEE1; -fx-background-radius: 16; -fx-padding: 30;">
+
+         <!-- Icon -->
+         <FontAwesomeIconView fill="#000000" glyphName="USER_CIRCLE" size="80" textAlignment="CENTER" wrappingWidth="408.0" />
+
+         <!-- Title -->
+         <Label alignment="CENTER" prefHeight="47.0" prefWidth="516.0" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Sign In">
+            <VBox.margin>
+               <Insets bottom="20.0" />
+            </VBox.margin>
+         </Label>
+
+         <!-- Email Field -->
+         <Label text="Email" />
+         <TextField fx:id="emailField" prefWidth="476.0" promptText="  Email" style="-fx-background-radius: 8; -fx-font-size: 14px;">
+            <padding>
+               <Insets bottom="8.0" top="8.0" />
+            </padding></TextField>
+
+         <!-- Password Field -->
+         <Label style="-fx-padding: 10 0 0 0;" text="Password" />
+         <PasswordField fx:id="passwordField" prefWidth="476.0" promptText="  Password" style="-fx-background-radius: 8; -fx-font-size: 14px;">
+            <padding>
+               <Insets bottom="8.0" top="8.0" />
+            </padding></PasswordField>
+
+         <!-- Forgot Password -->
+         <HBox alignment="CENTER_RIGHT" prefWidth="476.0">
+            <Hyperlink fx:id="signupLink1" style="-fx-text-fill: #418DD9; -fx-font-size: 12px;" text="Forgot Your Password?" />
+         </HBox>
+
+         <!-- Login Button -->
+         <Button fx:id="loginButton" prefHeight="45.0" prefWidth="476.0" style="-fx-background-color: #418DD9;                            -fx-text-fill: white;                            -fx-font-size: 16px;                            -fx-font-weight: bold;                            -fx-background-radius: 8;                            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.5, 0, 2);                            -fx-cursor: hand;" text="Login">
+            <VBox.margin>
+               <Insets left="70.0" right="70.0" top="20.0" />
+            </VBox.margin>
+         </Button>
+
+         <!-- Sign Up Link -->
+         <HBox alignment="CENTER" spacing="5">
+            <Label style="-fx-text-fill: #4a4a4a;" text="Don't have an account?" />
+            <Hyperlink fx:id="signUpLink" style="-fx-text-fill: #418DD9;" text="Sign Up Here" />
+         </HBox>
+      </VBox>
+   </VBox>
+</AnchorPane>

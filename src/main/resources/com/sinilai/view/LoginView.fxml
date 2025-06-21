@@ -20,7 +20,7 @@
       <VBox maxWidth="500" prefWidth="500" spacing="10" style="-fx-background-color: #DDDEE1; -fx-background-radius: 16; -fx-padding: 30;">
 
          <!-- Icon -->
-         <FontAwesomeIconView fill="#000000" glyphName="USER_CIRCLE" size="80" textAlignment="CENTER" wrappingWidth="408.0" />
+         <FontAwesomeIconView fill="#000000" glyphName="USER_CIRCLE" size="80" textAlignment="CENTER" wrappingWidth="448.0" />
 
          <!-- Title -->
          <Label alignment="CENTER" prefHeight="47.0" prefWidth="516.0" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Sign In">

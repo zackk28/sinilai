@@ -112,9 +112,8 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Kirim data user jika diperlukan
-            // DashboardController controller = loader.getController();
-            // controller.setUser(user);
+            DashboardController controller = loader.getController();
+            controller.setUser(user);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setTitle("Dashboard - SINILAI");

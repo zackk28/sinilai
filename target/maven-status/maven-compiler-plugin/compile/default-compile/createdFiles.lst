@@ -1,6 +1,8 @@
 com\sinilai\App.class
 com\sinilai\controller\DashboardController.class
+com\sinilai\controller\ProfilController.class
 com\sinilai\controller\RegisterController.class
 com\sinilai\utils\Koneksi.class
+com\sinilai\model\MahasiswaModel.class
 com\sinilai\model\UserModel.class
 com\sinilai\controller\LoginController.class

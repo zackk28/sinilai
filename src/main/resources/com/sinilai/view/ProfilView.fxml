@@ -3,7 +3,6 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -16,40 +15,31 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #F5F5F5;"
-    xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.sinilai.controller.ProfilController">
+<BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sinilai.controller.ProfilController">
 
     <top>
-        <AnchorPane prefHeight="70.0"
-            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
+        <AnchorPane prefHeight="70.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
             <children>
                 <Label layoutX="45.0" layoutY="19.0" text="SINILAI" textFill="#333333">
                     <font>
                         <Font name="System Bold" size="32.0" />
                     </font>
                 </Label>
-                <Label fx:id="namaMahasiswaLabel" layoutX="1662.0" layoutY="22.0"
-                    text="Nama Mahasiswa" textFill="#333333">
+                <Label fx:id="namaMahasiswaLabel" layoutX="1662.0" layoutY="22.0" text="Nama Mahasiswa" textFill="#333333">
                     <font>
                         <Font name="System Bold" size="18.0" />
                     </font>
                 </Label>
-                <ChoiceBox fx:id="choiceBox" layoutX="1846.0" layoutY="18.0" prefHeight="35.0"
-                    prefWidth="60.0"
-                    style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;" />
             </children>
         </AnchorPane>
     </top>
 
     <left>
-        <AnchorPane prefWidth="280.0"
-            style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
+        <AnchorPane prefWidth="280.0" style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
             <children>
                 <VBox alignment="CENTER" layoutX="40.0" layoutY="40.0" spacing="15.0">
                     <children>
-                        <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0"
-                            style="-fx-background-color: #E8E8E8; -fx-background-radius: 10;">
+                        <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: #E8E8E8; -fx-background-radius: 10;">
                             <children>
                                 <FontAwesomeIconView fill="#AAAAAA" glyphName="USERS" size="40" />
                             </children>
@@ -59,10 +49,7 @@
 
                 <VBox layoutX="25.0" layoutY="180.0" spacing="8.0">
                     <children>
-                        <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
-                            prefHeight="50.0" prefWidth="230.0"
-                            style="-fx-background-color: transparent;" text="Home"
-                            textFill="#666666">
+                        <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="Home" textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -74,10 +61,7 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="profilButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
-                            prefHeight="50.0" prefWidth="230.0"
-                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);"
-                            text="Profil" textFill="#666666">
+                        <Button fx:id="profilButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);" text="Profil" textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -89,25 +73,19 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="khsButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
-                            prefHeight="50.0" prefWidth="230.0"
-                            style="-fx-background-color: transparent;" text="KHS" textFill="#666666">
+                        <Button fx:id="khsButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="KHS" textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
                             <graphic>
-                                <FontAwesomeIconView fill="#666666" glyphName="GRADUATION_CAP"
-                                    size="18" />
+                                <FontAwesomeIconView fill="#666666" glyphName="GRADUATION_CAP" size="18" />
                             </graphic>
                             <padding>
                                 <Insets left="20.0" />
                             </padding>
                         </Button>
 
-                        <Button fx:id="settingButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
-                            prefHeight="50.0" prefWidth="230.0"
-                            style="-fx-background-color: transparent;" text="Setting"
-                            textFill="#666666">
+                        <Button fx:id="settingButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="Setting" textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -121,9 +99,7 @@
                     </children>
                 </VBox>
 
-                <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefHeight="173.0"
-                    prefWidth="218.0" spacing="10.0"
-                    style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
+                <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefHeight="173.0" prefWidth="218.0" spacing="10.0" style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
                     <children>
                         <HBox alignment="CENTER" spacing="5.0">
                             <children>
@@ -141,10 +117,7 @@
                     </children>
                 </VBox>
 
-                <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0"
-                    layoutX="25.0" layoutY="880.0" onAction="#handleLogout" prefHeight="45.0"
-                    prefWidth="180.0" style="-fx-background-color: transparent;" text="Logout"
-                    textFill="#999999">
+                <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0" layoutX="25.0" layoutY="880.0" onAction="#handleLogout" prefHeight="45.0" prefWidth="180.0" style="-fx-background-color: transparent;" text="Logout" textFill="#999999">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -168,27 +141,22 @@
                     </font>
                 </Label>
 
-                <HBox spacing="20.0"
-                    style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                <HBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
                     <children>
                         <VBox alignment="CENTER" spacing="10.0">
                             <children>
-                                <ImageView fx:id="profileImageView" fitHeight="120.0"
-                                    fitWidth="120.0" preserveRatio="true">
+                                <ImageView fx:id="profileImageView" fitHeight="120.0" fitWidth="120.0" preserveRatio="true">
                                     <image>
                                         <Image url="@../images/default-avatar.png" />
                                     </image>
                                 </ImageView>
-                                <Button fx:id="uploadPhotoButton" onAction="#handleUploadPhoto"
-                                    style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 5;"
-                                    text="📷 Ganti Foto" />
+                                <Button fx:id="uploadPhotoButton" onAction="#handleUploadPhoto" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 5;" text="📷 Ganti Foto" />
                             </children>
                         </VBox>
 
                         <VBox spacing="8.0">
                             <children>
-                                <Label fx:id="namaProfilLabel" text="Nama Mahasiswa"
-                                    textFill="#333333">
+                                <Label fx:id="namaProfilLabel" text="Nama Mahasiswa" textFill="#333333">
                                     <font>
                                         <Font name="System Bold" size="18.0" />
                                     </font>
@@ -207,18 +175,13 @@
                     <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                             <children>
-                                <Button
-                                    style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;"
-                                    text="Data Pribadi" />
+                                <Button style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;" text="Data Pribadi" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="ubahDataButton" onAction="#handleUbahData"
-                                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-background-radius: 5;"
-                                    text="Ubah Data" />
+                                <Button fx:id="ubahDataButton" onAction="#handleUbahData" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-background-radius: 5;" text="Ubah Data" />
                             </children>
                         </HBox>
 
-                        <TableView fx:id="dataTable"
-                            style="-fx-background-color: white; -fx-background-radius: 8;">
+                        <TableView fx:id="dataTable" style="-fx-background-color: white; -fx-background-radius: 8;">
                             <columns>
                                 <TableColumn fx:id="fieldColumn" prefWidth="250" text="Field" />
                                 <TableColumn fx:id="valueColumn" prefWidth="550" text="Value" />

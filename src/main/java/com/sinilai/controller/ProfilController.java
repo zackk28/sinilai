@@ -55,10 +55,12 @@ public class ProfilController {
     private Button settingButton;
     @FXML
     private Button ubahDataButton;
+    @FXML
+    private Button uploadPhotoButton;
 
     private MahasiswaModel currentMahasiswa;
     private UserModel currentUser;
-    private volatile boolean isInitialized = false;
+    private boolean isInitialized = false;
 
     /**
      * Initialize method yang dipanggil setelah FXML dimuat
@@ -82,51 +84,58 @@ public class ProfilController {
      * Setup kolom tabel untuk menampilkan data mahasiswa
      */
     private void setupTableColumns() {
-        try {
-            if (fieldColumn == null || valueColumn == null || dataTable == null) {
-                throw new IllegalStateException("Table components not properly injected");
-            }
-
-            fieldColumn.setCellValueFactory(
-                    param -> new javafx.beans.property.SimpleStringProperty(
-                            param.getValue() != null ? param.getValue().getKey() : ""));
-            valueColumn.setCellValueFactory(
-                    param -> new javafx.beans.property.SimpleStringProperty(
-                            param.getValue() != null ? param.getValue().getValue() : ""));
-
-            // Set column widths
-            fieldColumn.prefWidthProperty().bind(dataTable.widthProperty().multiply(0.3));
-            valueColumn.prefWidthProperty().bind(dataTable.widthProperty().multiply(0.7));
-
-            // Prevent column reordering
-            fieldColumn.setReorderable(false);
-            valueColumn.setReorderable(false);
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error setting up table columns", e);
-            throw new RuntimeException("Failed to setup table columns", e);
+        if (fieldColumn == null || valueColumn == null || dataTable == null) {
+            LOGGER.warning("Table components not properly injected");
+            return;
         }
+
+        // Setup cell value factories
+        fieldColumn.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getKey() != null) {
+                return new javafx.beans.property.SimpleStringProperty(param.getValue().getKey());
+            }
+            return new javafx.beans.property.SimpleStringProperty("");
+        });
+
+        valueColumn.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getValue() != null) {
+                return new javafx.beans.property.SimpleStringProperty(param.getValue().getValue());
+            }
+            return new javafx.beans.property.SimpleStringProperty("-");
+        });
+
+        // Set column properties
+        fieldColumn.prefWidthProperty().bind(dataTable.widthProperty().multiply(0.35));
+        valueColumn.prefWidthProperty().bind(dataTable.widthProperty().multiply(0.65));
+
+        fieldColumn.setReorderable(false);
+        valueColumn.setReorderable(false);
+        fieldColumn.setResizable(true);
+        valueColumn.setResizable(true);
+
+        // Set column headers
+        fieldColumn.setText("Field");
+        valueColumn.setText("Value");
     }
 
     /**
      * Setup navigation buttons
      */
     private void setupNavigationButtons() {
-        try {
-            if (homeButton != null) {
-                homeButton.setOnAction(this::handleHomeNavigation);
-            }
-            if (khsButton != null) {
-                khsButton.setOnAction(this::handleKhsNavigation);
-            }
-            if (settingButton != null) {
-                settingButton.setOnAction(this::handleSettingNavigation);
-            }
-            if (ubahDataButton != null) {
-                ubahDataButton.setOnAction(this::handleUbahData);
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error setting up navigation buttons", e);
+        if (homeButton != null) {
+            homeButton.setOnAction(this::handleHomeNavigation);
+        }
+        if (khsButton != null) {
+            khsButton.setOnAction(this::handleKhsNavigation);
+        }
+        if (settingButton != null) {
+            settingButton.setOnAction(this::handleSettingNavigation);
+        }
+        if (ubahDataButton != null) {
+            ubahDataButton.setOnAction(this::handleUbahData);
+        }
+        if (uploadPhotoButton != null) {
+            uploadPhotoButton.setOnAction(this::handleUploadPhoto);
         }
     }
 
@@ -134,120 +143,109 @@ public class ProfilController {
      * Setup image view properties
      */
     private void setupImageView() {
-        try {
-            if (profileImageView != null) {
-                profileImageView.setPreserveRatio(true);
-                profileImageView.setSmooth(true);
-                profileImageView.setCache(true);
+        if (profileImageView != null) {
+            profileImageView.setPreserveRatio(true);
+            profileImageView.setSmooth(true);
+            profileImageView.setCache(true);
+            profileImageView.setFitWidth(150);
+            profileImageView.setFitHeight(150);
 
-                // Set default image if available
-                try {
-                    Image defaultImage = new Image(
-                            getClass().getResourceAsStream("/com/sinilai/images/default-avatar.png"));
-                    if (!defaultImage.isError()) {
-                        profileImageView.setImage(defaultImage);
-                    }
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Could not load default avatar image", e);
+            // Set default image
+            loadDefaultImage();
+        }
+    }
+
+    /**
+     * Load default profile image
+     */
+    private void loadDefaultImage() {
+        try {
+            // Try to load default avatar from resources
+            String defaultImagePath = "/com/sinilai/images/default-avatar.png";
+            var imageStream = getClass().getResourceAsStream(defaultImagePath);
+
+            if (imageStream != null) {
+                Image defaultImage = new Image(imageStream);
+                if (!defaultImage.isError()) {
+                    profileImageView.setImage(defaultImage);
+                    return;
                 }
             }
+
+            // If default image not found, create a simple placeholder
+            createPlaceholderImage();
+
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error setting up image view", e);
+            LOGGER.log(Level.WARNING, "Could not load default avatar image", e);
+            createPlaceholderImage();
         }
     }
 
     /**
-     * Set data mahasiswa dan user dengan improved error handling
+     * Create placeholder image when default image is not available
+     */
+    private void createPlaceholderImage() {
+        try {
+            // Create a simple colored rectangle as placeholder
+            javafx.scene.paint.Color color = javafx.scene.paint.Color.LIGHTGRAY;
+            javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(150, 150);
+            javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setFill(color);
+            gc.fillRect(0, 0, 150, 150);
+            gc.setFill(javafx.scene.paint.Color.DARKGRAY);
+            gc.fillText("No Image", 50, 75);
+
+            javafx.scene.image.WritableImage placeholderImage = new javafx.scene.image.WritableImage(150, 150);
+            canvas.snapshot(null, placeholderImage);
+            profileImageView.setImage(placeholderImage);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Could not create placeholder image", e);
+        }
+    }
+
+    /**
+     * Set data mahasiswa dan user
      */
     public void setMahasiswa(MahasiswaModel mahasiswa, UserModel user) {
-        LOGGER.info("Setting mahasiswa data...");
-
-        try {
-            // Validate input parameters
-            if (mahasiswa == null) {
-                throw new IllegalArgumentException("Data mahasiswa tidak boleh null");
-            }
-            if (user == null) {
-                throw new IllegalArgumentException("Data user tidak boleh null");
-            }
-
-            // Wait for controller to be initialized if needed
-            if (!isInitialized) {
-                LOGGER.warning("Controller not yet initialized, waiting...");
-                Platform.runLater(() -> setMahasiswa(mahasiswa, user));
-                return;
-            }
-
-            // Validate required fields
-            validateMahasiswaData(mahasiswa);
-            validateUserData(user);
-
-            this.currentMahasiswa = mahasiswa;
-            this.currentUser = user;
-
-            // Refresh data on JavaFX Application Thread
-            if (Platform.isFxApplicationThread()) {
-                refreshData();
-            } else {
-                Platform.runLater(this::refreshData);
-            }
-
-            LOGGER.info("Mahasiswa data set successfully for NIM: " + mahasiswa.getNim());
-
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.SEVERE, "Invalid data provided", e);
-            showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error setting mahasiswa data", e);
-            showAlert("Error", "Gagal memuat data: " + e.getMessage(), Alert.AlertType.ERROR);
+        if (mahasiswa == null || user == null) {
+            LOGGER.warning("Mahasiswa or User data is null");
+            showAlert("Error", "Data mahasiswa atau user tidak tersedia", Alert.AlertType.ERROR);
+            return;
         }
+
+        this.currentMahasiswa = mahasiswa;
+        this.currentUser = user;
+
+        if (isInitialized) {
+            refreshData();
+        } else {
+            // Wait for initialization to complete
+            Platform.runLater(() -> {
+                if (isInitialized) {
+                    refreshData();
+                }
+            });
+        }
+
+        LOGGER.info("Mahasiswa data set successfully for: " + user.getNama());
     }
 
     /**
-     * Validate mahasiswa data
-     */
-    private void validateMahasiswaData(MahasiswaModel mahasiswa) {
-        if (mahasiswa.getNim() == null || mahasiswa.getNim().trim().isEmpty()) {
-            throw new IllegalArgumentException("NIM mahasiswa tidak boleh kosong");
-        }
-        // Add more validation as needed
-    }
-
-    /**
-     * Validate user data
-     */
-    private void validateUserData(UserModel user) {
-        if (user.getNama() == null || user.getNama().trim().isEmpty()) {
-            throw new IllegalArgumentException("Nama user tidak boleh kosong");
-        }
-        // Add more validation as needed
-    }
-
-    /**
-     * Refresh tampilan data dengan improved error handling
+     * Refresh tampilan data
      */
     public void refreshData() {
-        if (!isInitialized) {
-            LOGGER.warning("Cannot refresh data - controller not initialized");
-            return;
-        }
-
-        if (currentMahasiswa == null || currentUser == null) {
-            LOGGER.warning("Cannot refresh data - missing mahasiswa or user data");
+        if (!isInitialized || currentMahasiswa == null || currentUser == null) {
+            LOGGER.warning("Cannot refresh data - not properly initialized");
             return;
         }
 
         try {
-            LOGGER.info("Refreshing data display...");
-
-            // Update components safely
-            updateLabels();
-            updateTableData();
-
-            LOGGER.info("Data display refreshed successfully");
-
+            Platform.runLater(() -> {
+                updateLabels();
+                updateTableData();
+            });
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error refreshing data display", e);
+            LOGGER.log(Level.SEVERE, "Error refreshing data", e);
             showAlert("Error", "Gagal memuat data profil: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
@@ -257,107 +255,100 @@ public class ProfilController {
      */
     private void updateLabels() {
         try {
-            if (namaMahasiswaLabel != null) {
-                namaMahasiswaLabel.setText(getValueOrDefault(currentUser.getNama(), "Nama tidak tersedia"));
-            }
-            if (namaProfilLabel != null) {
-                namaProfilLabel.setText(getValueOrDefault(currentUser.getNama(), "Nama tidak tersedia"));
-            }
-            if (nimLabel != null) {
-                nimLabel.setText("NIM: " + getValueOrDefault(currentMahasiswa.getNim(), "-"));
-            }
-            if (emailLabel != null) {
-                emailLabel.setText("Email: " + getValueOrDefault(currentUser.getEmail(), "-"));
-            }
-            if (jurusanLabel != null) {
-                jurusanLabel.setText("Jurusan: " + getValueOrDefault(currentMahasiswa.getJurusan(), "-"));
-            }
-            if (prodiLabel != null) {
-                prodiLabel.setText("Program Studi: " + getValueOrDefault(currentMahasiswa.getProdi(), "-"));
-            }
+            String nama = currentUser.getNama() != null ? currentUser.getNama() : "Nama tidak tersedia";
+            String nim = currentMahasiswa.getNim() != null ? currentMahasiswa.getNim() : "-";
+            String email = currentUser.getEmail() != null ? currentUser.getEmail() : "-";
+            String jurusan = currentMahasiswa.getJurusan() != null ? currentMahasiswa.getJurusan() : "-";
+            String prodi = currentMahasiswa.getProdi() != null ? currentMahasiswa.getProdi() : "-";
+
+            if (namaMahasiswaLabel != null)
+                namaMahasiswaLabel.setText(nama);
+            if (namaProfilLabel != null)
+                namaProfilLabel.setText(nama);
+            if (nimLabel != null)
+                nimLabel.setText("NIM: " + nim);
+            if (emailLabel != null)
+                emailLabel.setText("Email: " + email);
+            if (jurusanLabel != null)
+                jurusanLabel.setText("Jurusan: " + jurusan);
+            if (prodiLabel != null)
+                prodiLabel.setText("Program Studi: " + prodi);
+
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error updating labels", e);
         }
     }
 
     /**
-     * Update data tabel dengan improved error handling
+     * Update data tabel
      */
     private void updateTableData() {
-        try {
-            if (dataTable == null) {
-                LOGGER.warning("DataTable is null, cannot update table data");
-                return;
-            }
+        if (dataTable == null) {
+            LOGGER.warning("DataTable is null");
+            return;
+        }
 
+        try {
             Map<String, String> dataMap = createDataMap();
             ObservableList<Map.Entry<String, String>> items = FXCollections.observableArrayList(dataMap.entrySet());
             dataTable.setItems(items);
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error updating table data", e);
-            throw new RuntimeException("Failed to update table data", e);
+            showAlert("Error", "Gagal memuat data tabel", Alert.AlertType.ERROR);
         }
     }
 
     /**
-     * Membuat map data mahasiswa dengan null safety
+     * Membuat map data mahasiswa
      */
     private Map<String, String> createDataMap() {
         Map<String, String> map = new LinkedHashMap<>();
 
-        try {
-            map.put("NIM", getValueOrDefault(currentMahasiswa.getNim(), "-"));
-            map.put("Jurusan", getValueOrDefault(currentMahasiswa.getJurusan(), "-"));
-            map.put("Program Studi", getValueOrDefault(currentMahasiswa.getProdi(), "-"));
-            map.put("Jalur Seleksi", getValueOrDefault(currentMahasiswa.getJalurSeleksi(), "-"));
-            map.put("Asal Sekolah", getValueOrDefault(currentMahasiswa.getAsalSekolah(), "-"));
-            map.put("Semester", String.valueOf(currentMahasiswa.getSemester()));
+        map.put("NIM", safeGetValue(currentMahasiswa.getNim()));
+        map.put("Nama", safeGetValue(currentUser.getNama()));
+        map.put("Email", safeGetValue(currentUser.getEmail()));
+        map.put("Jurusan", safeGetValue(currentMahasiswa.getJurusan()));
+        map.put("Program Studi", safeGetValue(currentMahasiswa.getProdi()));
+        map.put("Semester", String.valueOf(currentMahasiswa.getSemester()));
 
-            // Handle date safely
-            String ttlString = "-";
-            try {
-                if (currentMahasiswa.getTtl() != null) {
-                    ttlString = currentMahasiswa.getTtl().toString();
-                }
-            } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Error formatting TTL", e);
-            }
-            map.put("Tanggal Lahir", ttlString);
-
-            map.put("Agama", getValueOrDefault(currentMahasiswa.getAgama(), "-"));
-            map.put("Jenis Kelamin", getValueOrDefault(currentMahasiswa.getJkDisplay(), "-"));
-            map.put("Alamat", getValueOrDefault(currentMahasiswa.getAlamat(), "-"));
-            map.put("Kota", getValueOrDefault(currentMahasiswa.getKota(), "-"));
-            map.put("Provinsi", getValueOrDefault(currentMahasiswa.getProv(), "-"));
-            map.put("No Telepon", getValueOrDefault(currentMahasiswa.getNoTelp(), "-"));
-            map.put("Pendidikan Akhir", getValueOrDefault(currentMahasiswa.getPendidikanAkhir(), "-"));
-            map.put("Status Menikah", getValueOrDefault(currentMahasiswa.getStatusMenikah(), "-"));
-            map.put("Tempat Tinggal", getValueOrDefault(currentMahasiswa.getTempatTinggal(), "-"));
-            map.put("Sumber Uang", getValueOrDefault(currentMahasiswa.getSumberUang(), "-"));
-            map.put("NIK", getValueOrDefault(currentMahasiswa.getNik(), "-"));
-            map.put("No KK", getValueOrDefault(currentMahasiswa.getNoKk(), "-"));
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error creating data map", e);
-            // Return minimal data map in case of error
-            map.clear();
-            map.put("Error", "Gagal memuat data");
+        // Handle additional fields if they exist
+        if (currentMahasiswa.getJalurSeleksi() != null) {
+            map.put("Jalur Seleksi", safeGetValue(currentMahasiswa.getJalurSeleksi()));
+        }
+        if (currentMahasiswa.getAsalSekolah() != null) {
+            map.put("Asal Sekolah", safeGetValue(currentMahasiswa.getAsalSekolah()));
+        }
+        if (currentMahasiswa.getTtl() != null) {
+            map.put("Tanggal Lahir", currentMahasiswa.getTtl().toString());
+        }
+        if (currentMahasiswa.getAgama() != null) {
+            map.put("Agama", safeGetValue(currentMahasiswa.getAgama()));
+        }
+        if (currentMahasiswa.getJkDisplay() != null) {
+            map.put("Jenis Kelamin", safeGetValue(currentMahasiswa.getJkDisplay()));
+        }
+        if (currentMahasiswa.getAlamat() != null) {
+            map.put("Alamat", safeGetValue(currentMahasiswa.getAlamat()));
+        }
+        if (currentMahasiswa.getKota() != null) {
+            map.put("Kota", safeGetValue(currentMahasiswa.getKota()));
+        }
+        if (currentMahasiswa.getProv() != null) {
+            map.put("Provinsi", safeGetValue(currentMahasiswa.getProv()));
+        }
+        if (currentMahasiswa.getNoTelp() != null) {
+            map.put("No Telepon", safeGetValue(currentMahasiswa.getNoTelp()));
         }
 
         return map;
     }
 
     /**
-     * Helper method untuk menangani nilai null dengan improved safety
+     * Helper method untuk nilai safe
      */
-    private String getValueOrDefault(String value, String defaultValue) {
-        try {
-            return (value != null && !value.trim().isEmpty()) ? value.trim() : defaultValue;
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error processing value", e);
-            return defaultValue;
-        }
+    private String safeGetValue(String value) {
+        return (value != null && !value.trim().isEmpty()) ? value.trim() : "-";
     }
 
     /**
@@ -369,32 +360,42 @@ public class ProfilController {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Pilih Foto Profil");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Gambar", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"));
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"));
 
-            // Set initial directory to user's pictures folder
+            // Set initial directory
             String userHome = System.getProperty("user.home");
             File picturesDir = new File(userHome, "Pictures");
-            if (picturesDir.exists()) {
+            if (picturesDir.exists() && picturesDir.isDirectory()) {
                 fileChooser.setInitialDirectory(picturesDir);
             }
 
-            File file = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
-            if (file != null) {
-                // Validasi ukuran file (maksimal 5MB)
-                if (file.length() > 5 * 1024 * 1024) {
-                    showAlert("Error", "Ukuran file terlalu besar. Maksimal 5MB", Alert.AlertType.WARNING);
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if (selectedFile != null) {
+                // Validate file size (max 5MB)
+                long maxSize = 5 * 1024 * 1024; // 5MB
+                if (selectedFile.length() > maxSize) {
+                    showAlert("Peringatan", "Ukuran file terlalu besar. Maksimal 5MB", Alert.AlertType.WARNING);
                     return;
                 }
 
-                Image image = new Image(file.toURI().toString());
-                if (image.isError()) {
-                    showAlert("Error", "File gambar tidak valid atau rusak", Alert.AlertType.ERROR);
-                    return;
-                }
+                // Load and set image
+                try {
+                    Image image = new Image(selectedFile.toURI().toString());
+                    if (image.isError()) {
+                        showAlert("Error", "File gambar tidak valid atau rusak", Alert.AlertType.ERROR);
+                        return;
+                    }
 
-                profileImageView.setImage(image);
-                showAlert("Success", "Foto profil berhasil diubah", Alert.AlertType.INFORMATION);
+                    profileImageView.setImage(image);
+                    showAlert("Sukses", "Foto profil berhasil diubah", Alert.AlertType.INFORMATION);
+
+                } catch (Exception e) {
+                    showAlert("Error", "Gagal memuat gambar: " + e.getMessage(), Alert.AlertType.ERROR);
+                }
             }
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error uploading photo", e);
             showAlert("Error", "Gagal mengunggah foto: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -406,32 +407,53 @@ public class ProfilController {
      */
     @FXML
     private void handleUbahData(ActionEvent event) {
-        // TODO: Implement edit data functionality
-        showAlert("Info", "Fitur ubah data akan segera tersedia", Alert.AlertType.INFORMATION);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/ProfileUpdate.fxml"));
+            Parent root = loader.load();
+
+            // Kirim data ke controller update (jika perlu)
+            ProfileUpdateController controller = loader.getController();
+            controller.setCurrentNim(currentMahasiswa.getNim()); // pastikan variabel currentMahasiswa ada dan sudah
+                                                                 // diset
+
+            // Ganti scene
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Gagal membuka halaman update profil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     /**
-     * Handle logout dengan konfirmasi
+     * Handle logout
      */
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
-            Optional<ButtonType> result = showConfirmation("Konfirmasi Logout",
-                    "Apakah Anda yakin ingin keluar dari aplikasi?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Konfirmasi Logout");
+            alert.setHeaderText(null);
+            alert.setContentText("Apakah Anda yakin ingin keluar dari aplikasi?");
 
+            Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
+                // Navigate to login
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/LoginView.fxml"));
                 Parent root = loader.load();
-                Stage stage = (Stage) namaProfilLabel.getScene().getWindow();
-                stage.setScene(new Scene(root));
+
+                Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
                 stage.setTitle("SINILAI - Login");
+                stage.setMaximized(false);
+                stage.centerOnScreen();
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error during logout", e);
             showAlert("Error", "Gagal membuka halaman login: " + e.getMessage(), Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error during logout", e);
-            showAlert("Error", "Terjadi kesalahan tidak terduga: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -440,41 +462,40 @@ public class ProfilController {
      */
     @FXML
     private void handleHomeNavigation(ActionEvent event) {
-        // TODO: Implement navigation to home
-        LOGGER.info("Navigate to Home requested");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
+            Parent root = loader.load();
+
+            DashboardController controller = loader.getController();
+            controller.setMahasiswaAndUser(currentMahasiswa, currentUser);
+
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Dashboard - SINILAI");
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error navigating to home", e);
+            showAlert("Error", "Gagal membuka halaman dashboard", Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
     private void handleKhsNavigation(ActionEvent event) {
-        // TODO: Implement navigation to KHS
-        LOGGER.info("Navigate to KHS requested");
+        // TODO: Implement KHS navigation
+        showAlert("Info", "Fitur KHS sedang dalam pengembangan", Alert.AlertType.INFORMATION);
     }
 
     @FXML
     private void handleSettingNavigation(ActionEvent event) {
-        // TODO: Implement navigation to Settings
-        LOGGER.info("Navigate to Settings requested");
+        // TODO: Implement Settings navigation
+        showAlert("Info", "Fitur Setting sedang dalam pengembangan", Alert.AlertType.INFORMATION);
     }
 
     /**
-     * Helper method untuk menampilkan alert dengan thread safety
+     * Show alert dengan thread safety
      */
     private void showAlert(String title, String message, Alert.AlertType type) {
-        try {
-            if (Platform.isFxApplicationThread()) {
-                showAlertInternal(title, message, type);
-            } else {
-                Platform.runLater(() -> showAlertInternal(title, message, type));
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error showing alert", e);
-        }
-    }
-
-    /**
-     * Internal method to show alert
-     */
-    private void showAlertInternal(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -483,38 +504,29 @@ public class ProfilController {
     }
 
     /**
-     * Helper method untuk menampilkan konfirmasi
+     * Internal method untuk menampilkan alert
      */
-    private Optional<ButtonType> showConfirmation(String title, String message) {
+    private void showAlertInternal(String title, String message, Alert.AlertType type) {
         try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(type);
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
-            return alert.showAndWait();
+            alert.showAndWait();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error showing confirmation", e);
-            return Optional.empty();
+            LOGGER.log(Level.SEVERE, "Error showing alert", e);
         }
     }
 
-    /**
-     * Get current mahasiswa data
-     */
+    // Getter methods
     public MahasiswaModel getCurrentMahasiswa() {
         return currentMahasiswa;
     }
 
-    /**
-     * Get current user data
-     */
     public UserModel getCurrentUser() {
         return currentUser;
     }
 
-    /**
-     * Check if controller is properly initialized
-     */
     public boolean isInitialized() {
         return isInitialized;
     }

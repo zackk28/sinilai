@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0"
+    style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/23.0.1"
+    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sinilai.controller.NilaiController">
+    <top>
+        <AnchorPane prefHeight="70.0" prefWidth="1920.0"
+            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;"
+            BorderPane.alignment="CENTER">
+            <children>
+                <!-- Logo Area -->
+                <Label alignment="CENTER_LEFT" layoutX="45.0" layoutY="19.0" prefHeight="32.0"
+                    prefWidth="200.0" text="SINILAI" textFill="#333333">
+                    <font>
+                        <Font name="System Bold" size="32.0" />
+                    </font>
+                </Label>
+
+                <!-- User Profile Area in Header -->
+                <HBox alignment="CENTER_RIGHT" layoutX="1630.0" layoutY="17.5" spacing="15.0" />
+                <Label layoutX="1666.0" layoutY="21.0" text="Nama Mahasiswa" textFill="#333333">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+    </top>
+
+    <left>
+        <AnchorPane prefHeight="960.0" prefWidth="280.0"
+            style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;"
+            BorderPane.alignment="CENTER">
+            <children>
+                <!-- Profil User -->
+                <VBox alignment="CENTER" layoutX="40.0" layoutY="40.0" spacing="15.0">
+                    <children>
+                        <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0"
+                            style="-fx-background-color: #E8E8E8; -fx-background-radius: 10;">
+                            <children>
+                                <FontAwesomeIconView fill="#AAAAAA" glyphName="USERS" size="40" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <!-- Navigasi -->
+                <VBox layoutX="25.0" layoutY="180.0" prefWidth="230.0" spacing="8.0">
+                    <children>
+                        <!-- Tombol Home -->
+                        <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
+                            prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;" text="Home"
+                            textFill="#666666">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                            <graphic>
+                                <FontAwesomeIconView fill="#666666" glyphName="HOME" size="18" />
+                            </graphic>
+                            <padding>
+                                <Insets left="20.0" />
+                            </padding>
+                        </Button>
+
+                        <!-- Tombol Pengisian Nilai (Aktif) -->
+                        <Button fx:id="pengisianButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);"
+                            text="Pengisian Nilai" textFill="#666666">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                            <graphic>
+                                <FontAwesomeIconView fill="#666666" glyphName="PENCIL" size="18" />
+                            </graphic>
+                            <padding>
+                                <Insets left="20.0" />
+                            </padding>
+                        </Button>
+
+                        <!-- Tombol Data Nilai -->
+                        <Button fx:id="dataNilaiButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;" text="Data Nilai"
+                            textFill="#666666">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                            <graphic>
+                                <FontAwesomeIconView fill="#666666" glyphName="GRADUATION_CAP"
+                                    size="18" />
+                            </graphic>
+                            <padding>
+                                <Insets left="20.0" />
+                            </padding>
+                        </Button>
+
+                        <!-- Tombol Manajemen Matkul -->
+                        <Button fx:id="ManajemenMatkulButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0"
+                            prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;" text="Manajemen Mata Kuliah"
+                            textFill="#666666">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                            <graphic>
+                                <FontAwesomeIconView fill="#666666" glyphName="COG" size="18" />
+                            </graphic>
+                            <padding>
+                                <Insets left="20.0" />
+                            </padding>
+                        </Button>
+                    </children>
+                </VBox>
+
+                <!-- Ilustrasi Edukasi -->
+                <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefWidth="230.0"
+                    spacing="10.0"
+                    style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
+                    <children>
+                        <HBox alignment="CENTER" spacing="5.0">
+                            <children>
+                                <FontAwesomeIconView fill="#4A90E2" glyphName="BOOK" size="35" />
+                                <FontAwesomeIconView fill="#FF9500" glyphName="GRADUATION_CAP"
+                                    size="30" />
+                            </children>
+                        </HBox>
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <children>
+                                <FontAwesomeIconView fill="#4A90E2" glyphName="CHART_LINE" size="25" />
+                                <FontAwesomeIconView fill="#FF9500" glyphName="TROPHY" size="28" />
+                            </children>
+                        </VBox>
+                        <FontAwesomeIconView fill="#4A90E2" glyphName="STAR" size="20" />
+                    </children>
+                </VBox>
+
+                <!-- Tombol Logout -->
+                <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0"
+                    layoutX="25.0" layoutY="880.0" prefHeight="45.0" prefWidth="180.0"
+                    style="-fx-background-color: transparent;" text="Logout" textFill="#999999">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <FontAwesomeIconView fill="#999999" glyphName="SIGN_OUT" size="16" />
+                    </graphic>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                </Button>
+            </children>
+        </AnchorPane>
+    </left>
+
+    <center>
+        <Pane prefHeight="960.0" prefWidth="1340.0" style="-fx-background-color: #F5F5F5;"
+            BorderPane.alignment="CENTER">
+            <children>
+                <!-- Page Header -->
+                <VBox layoutX="50.0" layoutY="40.0" spacing="8.0">
+                    <children>
+                        <Label text="Nilai" textFill="#333333">
+                            <font>
+                                <Font name="System Bold" size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Hello Zahra Siti" textFill="#666666">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+
+                <!-- Filter Section -->
+                <VBox layoutX="50.0" layoutY="140.0" prefWidth="1200.0" spacing="20.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                            <children>
+                                <!-- Filter Nama -->
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label text="Nama" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="namaComboBox" prefHeight="35.0"
+                                            prefWidth="180.0" promptText="Pilih Nama"
+                                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 6;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Filter Kelas -->
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label text="Kelas" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="kelasComboBox" prefHeight="35.0"
+                                            prefWidth="180.0" promptText="Pilih Kelas"
+                                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 6;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Filter Jurusan -->
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label text="Jurusan" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="jurusanComboBox" prefHeight="35.0"
+                                            prefWidth="180.0" promptText="Pilih Jurusan"
+                                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 6;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Filter Prodi -->
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label text="Prodi" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="prodiComboBox" prefHeight="35.0"
+                                            prefWidth="180.0" promptText="Pilih Prodi"
+                                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-background-radius: 6;" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- Search Section -->
+                <VBox layoutX="50.0" layoutY="280.0" prefWidth="1200.0" spacing="15.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                            <children>
+                                <Label text="Search" textFill="#333333">
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="searchField" prefHeight="35.0" prefWidth="300.0"
+                                    promptText="Ramadani"
+                                    style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 0 10;" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- Table Section -->
+                <VBox layoutX="50.0" layoutY="340.0" prefWidth="1200.0" spacing="20.0">
+                    <children>
+                        <VBox spacing="15.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                            <children>
+                                <TableView fx:id="nilaiTableView" prefHeight="300.0"
+                                    prefWidth="1150.0" style="-fx-background-color: transparent;">
+                                    <columns>
+                                        <TableColumn fx:id="namaMahasiswaColumn" prefWidth="300.0"
+                                            text="Nama Mahasiswa" />
+                                        <TableColumn fx:id="kelasColumn" prefWidth="200.0"
+                                            text="Kelas" />
+                                        <TableColumn fx:id="jurusanProdiColumn" prefWidth="350.0"
+                                            text="Jurusan/Prodi" />
+                                        <TableColumn fx:id="aksiColumn" prefWidth="300.0"
+                                            text="Aksi" />
+                                    </columns>
+                                </TableView>
+
+                                <!-- Action Button -->
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <Button fx:id="nilaiButton" alignment="CENTER"
+                                            prefHeight="40.0" prefWidth="120.0"
+                                            style="-fx-background-color: #4A90E2; -fx-background-radius: 20; -fx-text-fill: white;"
+                                            text="⊕ Nilai">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </Pane>
+    </center>
+</BorderPane>

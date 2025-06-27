@@ -14,12 +14,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sinilai.controller.DataNilaiDosenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0"
+    style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/23.0.1"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.sinilai.controller.DataNilaiDosenController">
     <top>
-        <AnchorPane prefHeight="70.0" prefWidth="1920.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="70.0" prefWidth="1920.0"
+            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;"
+            BorderPane.alignment="CENTER">
             <children>
                 <!-- Logo Area -->
-                <Label alignment="CENTER_LEFT" layoutX="45.0" layoutY="19.0" prefHeight="32.0" prefWidth="200.0" text="SINILAI" textFill="#333333">
+                <Label alignment="CENTER_LEFT" layoutX="45.0" layoutY="19.0" prefHeight="32.0"
+                    prefWidth="200.0" text="SINILAI" textFill="#333333">
                     <font>
                         <Font name="System Bold" size="32.0" />
                     </font>
@@ -37,12 +43,15 @@
     </top>
 
     <left>
-        <AnchorPane prefHeight="960.0" prefWidth="280.0" style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="960.0" prefWidth="280.0"
+            style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;"
+            BorderPane.alignment="CENTER">
             <children>
                 <!-- Profil User -->
                 <VBox alignment="CENTER" layoutX="40.0" layoutY="40.0" spacing="15.0">
                     <children>
-                        <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: #E8E8E8; -fx-background-radius: 10;">
+                        <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0"
+                            style="-fx-background-color: #E8E8E8; -fx-background-radius: 10;">
                             <children>
                                 <FontAwesomeIconView fill="#AAAAAA" glyphName="USERS" size="40" />
                             </children>
@@ -54,7 +63,10 @@
                 <VBox layoutX="25.0" layoutY="180.0" prefWidth="230.0" spacing="8.0">
                     <children>
                         <!-- Tombol Home -->
-                        <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="Home" textFill="#666666">
+                        <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
+                            prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;" text="Home"
+                            textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -67,7 +79,10 @@
                         </Button>
 
                         <!-- Tombol Pengisian Nilai -->
-                        <Button fx:id="pengisianButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);" text="Pengisian Nilai" textFill="#666666">
+                        <Button fx:id="pengisianButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;"
+                            text="Pengisian Nilai" textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -80,12 +95,17 @@
                         </Button>
 
                         <!-- Tombol Data Nilai (aktif) -->
-                        <Button fx:id="dataNilaiButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="Data Nilai" textFill="#666666">
+                        <Button fx:id="dataNilaiButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);"
+                            text="Data Nilai"
+                            textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
                             <graphic>
-                                <FontAwesomeIconView fill="#666666" glyphName="GRADUATION_CAP" size="18" />
+                                <FontAwesomeIconView fill="#666666" glyphName="GRADUATION_CAP"
+                                    size="18" />
                             </graphic>
                             <padding>
                                 <Insets left="20.0" />
@@ -93,7 +113,10 @@
                         </Button>
 
                         <!-- Tombol Manajemen Matkul -->
-                        <Button fx:id="ManajemenMatkulButton" alignment="CENTER_LEFT" graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;" text="Manajemen Mata Kuliah" textFill="#666666">
+                        <Button fx:id="ManajemenMatkulButton" alignment="CENTER_LEFT"
+                            graphicTextGap="15.0" prefHeight="50.0" prefWidth="230.0"
+                            style="-fx-background-color: transparent;" text="Manajemen Mata Kuliah"
+                            textFill="#666666">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -108,12 +131,15 @@
                 </VBox>
 
                 <!-- Ilustrasi Edukasi -->
-                <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefWidth="230.0" spacing="10.0" style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
+                <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefWidth="230.0"
+                    spacing="10.0"
+                    style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
                     <children>
                         <HBox alignment="CENTER" spacing="5.0">
                             <children>
                                 <FontAwesomeIconView fill="#4A90E2" glyphName="BOOK" size="35" />
-                                <FontAwesomeIconView fill="#FF9500" glyphName="GRADUATION_CAP" size="30" />
+                                <FontAwesomeIconView fill="#FF9500" glyphName="GRADUATION_CAP"
+                                    size="30" />
                             </children>
                         </HBox>
                         <VBox alignment="CENTER" spacing="5.0">
@@ -127,7 +153,9 @@
                 </VBox>
 
                 <!-- Tombol Logout -->
-                <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0" layoutX="25.0" layoutY="880.0" prefHeight="45.0" prefWidth="180.0" style="-fx-background-color: transparent;" text="Logout" textFill="#999999">
+                <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0"
+                    layoutX="25.0" layoutY="880.0" prefHeight="45.0" prefWidth="180.0"
+                    style="-fx-background-color: transparent;" text="Logout" textFill="#999999">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -143,7 +171,8 @@
     </left>
 
     <center>
-        <Pane prefHeight="960.0" prefWidth="1390.0" style="-fx-background-color: #F5F5F5;" BorderPane.alignment="CENTER">
+        <Pane prefHeight="960.0" prefWidth="1390.0" style="-fx-background-color: #F5F5F5;"
+            BorderPane.alignment="CENTER">
             <children>
                 <!-- Page Header -->
                 <VBox layoutX="50.0" layoutY="40.0" spacing="8.0">
@@ -153,7 +182,8 @@
                                 <Font name="System Bold" size="32.0" />
                             </font>
                         </Label>
-                        <Label fx:id="dosenNameLabel" text="Dr. Ahmad Suryadi, M.Kom" textFill="#666666">
+                        <Label fx:id="dosenNameLabel" text="Dr. Ahmad Suryadi, M.Kom"
+                            textFill="#666666">
                             <font>
                                 <Font size="18.0" />
                             </font>
@@ -169,7 +199,8 @@
                 <!-- Filter dan Tambah Nilai Section -->
                 <VBox layoutX="50.0" layoutY="170.0" prefWidth="1250.0" spacing="15.0">
                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
+                        <HBox alignment="CENTER_LEFT" spacing="15.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
                             <children>
                                 <!-- Filter Mata Kuliah -->
                                 <VBox spacing="5.0">
@@ -179,7 +210,9 @@
                                                 <Font name="System Bold" size="14.0" />
                                             </font>
                                         </Label>
-                                        <ComboBox fx:id="mataKuliahComboBox" prefHeight="35.0" prefWidth="250.0" promptText="Pilih Mata Kuliah" style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                                        <ComboBox fx:id="mataKuliahComboBox" prefHeight="35.0"
+                                            prefWidth="250.0" promptText="Pilih Mata Kuliah"
+                                            style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6;" />
                                     </children>
                                 </VBox>
 
@@ -191,7 +224,9 @@
                                                 <Font name="System Bold" size="14.0" />
                                             </font>
                                         </Label>
-                                        <ComboBox fx:id="tahunAjaranComboBox" prefHeight="35.0" prefWidth="200.0" promptText="2024/2025 Ganjil" style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                                        <ComboBox fx:id="tahunAjaranComboBox" prefHeight="35.0"
+                                            prefWidth="200.0" promptText="2024/2025 Ganjil"
+                                            style="-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6;" />
                                     </children>
                                 </VBox>
 
@@ -199,12 +234,16 @@
                                 <VBox spacing="5.0">
                                     <children>
                                         <Label text=" " />
-                                        <Button fx:id="searchButton" prefHeight="35.0" prefWidth="80.0" style="-fx-background-color: #4A90E2; -fx-background-radius: 6; -fx-text-fill: white;" text="Search">
+                                        <Button fx:id="searchButton" prefHeight="35.0"
+                                            prefWidth="80.0"
+                                            style="-fx-background-color: #4A90E2; -fx-background-radius: 6; -fx-text-fill: white;"
+                                            text="Search">
                                             <font>
                                                 <Font name="System Bold" size="14.0" />
                                             </font>
                                             <graphic>
-                                                <FontAwesomeIconView fill="WHITE" glyphName="SEARCH" size="14" />
+                                                <FontAwesomeIconView fill="WHITE" glyphName="SEARCH"
+                                                    size="14" />
                                             </graphic>
                                         </Button>
                                     </children>
@@ -217,12 +256,16 @@
                                 <VBox spacing="5.0">
                                     <children>
                                         <Label text=" " />
-                                        <Button fx:id="tambahNilaiButton" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #28A745; -fx-background-radius: 6; -fx-text-fill: white;" text="Tambah Nilai">
+                                        <Button fx:id="tambahNilaiButton" prefHeight="35.0"
+                                            prefWidth="120.0"
+                                            style="-fx-background-color: #28A745; -fx-background-radius: 6; -fx-text-fill: white;"
+                                            text="Tambah Nilai">
                                             <font>
                                                 <Font name="System Bold" size="14.0" />
                                             </font>
                                             <graphic>
-                                                <FontAwesomeIconView fill="WHITE" glyphName="PLUS" size="14" />
+                                                <FontAwesomeIconView fill="WHITE" glyphName="PLUS"
+                                                    size="14" />
                                             </graphic>
                                         </Button>
                                     </children>
@@ -235,10 +278,12 @@
                 <!-- Data Nilai Mahasiswa Section -->
                 <VBox layoutX="50.0" layoutY="280.0" prefWidth="1250.0" spacing="20.0">
                     <children>
-                        <VBox spacing="15.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <VBox spacing="15.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
                             <children>
                                 <!-- Header dengan ikon -->
-                                <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #4A90E2; -fx-background-radius: 8; -fx-padding: 15;">
+                                <HBox alignment="CENTER_LEFT" spacing="10.0"
+                                    style="-fx-background-color: #4A90E2; -fx-background-radius: 8; -fx-padding: 15;">
                                     <children>
                                         <FontAwesomeIconView fill="WHITE" glyphName="LIST" size="18" />
                                         <Label text="Daftar Nilai Mahasiswa" textFill="WHITE">
@@ -250,16 +295,24 @@
                                 </HBox>
 
                                 <!-- Tabel Nilai -->
-                                <TableView fx:id="nilaiTableView" prefHeight="350.0" prefWidth="1200.0" style="-fx-background-color: transparent; -fx-table-cell-border-color: #E0E0E0;">
+                                <TableView fx:id="nilaiTableView" prefHeight="350.0"
+                                    prefWidth="1200.0"
+                                    style="-fx-background-color: transparent; -fx-table-cell-border-color: #E0E0E0;">
                                     <columns>
                                         <TableColumn fx:id="nimColumn" prefWidth="120.0" text="NIM" />
-                                        <TableColumn fx:id="namaMahasiswaColumn" prefWidth="250.0" text="Nama Mahasiswa" />
-                                        <TableColumn fx:id="kodeMataKuliahColumn" prefWidth="120.0" text="Kode MK" />
-                                        <TableColumn fx:id="namaMataKuliahColumn" prefWidth="200.0" text="Nama Mata Kuliah" />
+                                        <TableColumn fx:id="namaMahasiswaColumn" prefWidth="250.0"
+                                            text="Nama Mahasiswa" />
+                                        <TableColumn fx:id="kodeMataKuliahColumn" prefWidth="120.0"
+                                            text="Kode MK" />
+                                        <TableColumn fx:id="namaMataKuliahColumn" prefWidth="200.0"
+                                            text="Nama Mata Kuliah" />
                                         <TableColumn fx:id="sksColumn" prefWidth="80.0" text="SKS" />
-                                        <TableColumn fx:id="nilaiMutuColumn" prefWidth="100.0" text="Nilai Mutu" />
-                                        <TableColumn fx:id="nilaiHurufColumn" prefWidth="100.0" text="Nilai Huruf" />
-                                        <TableColumn fx:id="aksiColumn" prefWidth="150.0" text="Aksi" />
+                                        <TableColumn fx:id="nilaiMutuColumn" prefWidth="100.0"
+                                            text="Nilai Mutu" />
+                                        <TableColumn fx:id="nilaiHurufColumn" prefWidth="100.0"
+                                            text="Nilai Huruf" />
+                                        <TableColumn fx:id="aksiColumn" prefWidth="150.0"
+                                            text="Aksi" />
                                     </columns>
                                 </TableView>
                             </children>
@@ -269,73 +322,81 @@
 
                 <!-- Summary Stats -->
                 <HBox layoutX="50.0" layoutY="720.0" prefWidth="1250.0" spacing="20.0" />
-                  <!-- Total Mahasiswa -->
-                  <VBox alignment="CENTER" layoutX="71.0" layoutY="776.0" prefWidth="150.0" spacing="5.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
-                      <children>
-                          <FontAwesomeIconView fill="#4A90E2" glyphName="USERS" size="24" />
-                          <Label text="Total Mahasiswa" textFill="#666666">
-                              <font>
-                                  <Font size="12.0" />
-                              </font>
-                          </Label>
-                          <Label fx:id="totalMahasiswaLabel" text="35" textFill="#333333">
-                              <font>
-                                  <Font name="System Bold" size="20.0" />
-                              </font>
-                          </Label>
-                      </children>
-                  </VBox>
+                <!-- Total Mahasiswa -->
+                <VBox alignment="CENTER" layoutX="71.0" layoutY="776.0" prefWidth="150.0"
+                    spacing="5.0"
+                    style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
+                    <children>
+                        <FontAwesomeIconView fill="#4A90E2" glyphName="USERS" size="24" />
+                        <Label text="Total Mahasiswa" textFill="#666666">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="totalMahasiswaLabel" text="35" textFill="#333333">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
 
-                  <!-- Nilai Sudah Diinput -->
-                  <VBox alignment="CENTER" layoutX="241.0" layoutY="776.0" prefWidth="150.0" spacing="5.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
-                      <children>
-                          <FontAwesomeIconView fill="#28A745" glyphName="CHECK_CIRCLE" size="24" />
-                          <Label text="Sudah Dinilai" textFill="#666666">
-                              <font>
-                                  <Font size="12.0" />
-                              </font>
-                          </Label>
-                          <Label fx:id="sudahDinilaiLabel" text="32" textFill="#333333">
-                              <font>
-                                  <Font name="System Bold" size="20.0" />
-                              </font>
-                          </Label>
-                      </children>
-                  </VBox>
+                <!-- Nilai Sudah Diinput -->
+                <VBox alignment="CENTER" layoutX="241.0" layoutY="776.0" prefWidth="150.0"
+                    spacing="5.0"
+                    style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
+                    <children>
+                        <FontAwesomeIconView fill="#28A745" glyphName="CHECK_CIRCLE" size="24" />
+                        <Label text="Sudah Dinilai" textFill="#666666">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="sudahDinilaiLabel" text="32" textFill="#333333">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
 
-                  <!-- Belum Dinilai -->
-                  <VBox alignment="CENTER" layoutX="411.0" layoutY="776.0" prefWidth="150.0" spacing="5.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
-                      <children>
-                          <FontAwesomeIconView fill="#DC3545" glyphName="EXCLAMATION_CIRCLE" size="24" />
-                          <Label text="Belum Dinilai" textFill="#666666">
-                              <font>
-                                  <Font size="12.0" />
-                              </font>
-                          </Label>
-                          <Label fx:id="belumDinilaiLabel" text="3" textFill="#333333">
-                              <font>
-                                  <Font name="System Bold" size="20.0" />
-                              </font>
-                          </Label>
-                      </children>
-                  </VBox>
+                <!-- Belum Dinilai -->
+                <VBox alignment="CENTER" layoutX="411.0" layoutY="776.0" prefWidth="150.0"
+                    spacing="5.0"
+                    style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
+                    <children>
+                        <FontAwesomeIconView fill="#DC3545" glyphName="EXCLAMATION_CIRCLE" size="24" />
+                        <Label text="Belum Dinilai" textFill="#666666">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="belumDinilaiLabel" text="3" textFill="#333333">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
 
-                  <!-- Rata-rata Nilai -->
-                  <VBox alignment="CENTER" layoutX="581.0" layoutY="776.0" prefWidth="150.0" spacing="5.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
-                      <children>
-                          <FontAwesomeIconView fill="#FF9500" glyphName="STAR" size="24" />
-                          <Label text="Rata-rata Nilai" textFill="#666666">
-                              <font>
-                                  <Font size="12.0" />
-                              </font>
-                          </Label>
-                          <Label fx:id="rataRataNilaiLabel" text="3.42" textFill="#333333">
-                              <font>
-                                  <Font name="System Bold" size="20.0" />
-                              </font>
-                          </Label>
-                      </children>
-                  </VBox>
+                <!-- Rata-rata Nilai -->
+                <VBox alignment="CENTER" layoutX="581.0" layoutY="776.0" prefWidth="150.0"
+                    spacing="5.0"
+                    style="-fx-background-color: #FFFFFF; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);">
+                    <children>
+                        <FontAwesomeIconView fill="#FF9500" glyphName="STAR" size="24" />
+                        <Label text="Rata-rata Nilai" textFill="#666666">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="rataRataNilaiLabel" text="3.42" textFill="#333333">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
             </children>
         </Pane>
     </center>

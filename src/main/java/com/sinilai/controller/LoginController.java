@@ -83,7 +83,17 @@ public class LoginController {
                 user.setNama(rs.getString("nama"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
-                user.setRole(rs.getString("role"));
+
+                // Perhatikan: role dibersihkan dari spasi dan diubah ke huruf kecil
+                String role = rs.getString("role");
+                if (role != null) {
+                    user.setRole(role.trim().toLowerCase());
+                } else {
+                    user.setRole("");
+                }
+
+                System.out.println("DEBUG: Login sebagai role: [" + user.getRole() + "]");
+
                 return user;
             }
 
@@ -109,16 +119,67 @@ public class LoginController {
 
     private void openDashboard(UserModel user) {
         try {
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+            MahasiswaModel mahasiswa = findMahasiswaByUserId(user.getId());
+
+            // Set session
+            setSession(user, mahasiswa);
+
+            // Load halaman dashboard
+>>>>>>> Stashed changes
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
             Scene scene = new Scene(loader.load());
 
             DashboardController controller = loader.getController();
             controller.setUser(user);
 
+<<<<<<< Updated upstream
+=======
+            // Tampilkan scene
+=======
+            FXMLLoader loader;
+            Scene scene;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setTitle("Dashboard - SINILAI");
+
+            String role = user.getRole(); // Sudah dibersihkan sebelumnya
+
+            if ("mahasiswa".equals(role)) {
+                loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
+                scene = new Scene(loader.load());
+
+                DashboardController controller = loader.getController();
+                controller.setUser(user);
+
+                stage.setTitle("Dashboard Mahasiswa - SINILAI");
+
+            } else if ("dosen".equals(role)) {
+                loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DosenDashboard.fxml"));
+                scene = new Scene(loader.load());
+
+                DashboardDosenController controller = loader.getController();
+                controller.setUser(user);
+
+                stage.setTitle("Dashboard Dosen - SINILAI");
+
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Login Gagal", "Role tidak dikenali: " + role);
+                return;
+            }
+
             stage.setScene(scene);
             stage.setMaximized(true);
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+            stage.show();
+=======
+>>>>>>> Stashed changes
+
+>>>>>>> Stashed changes
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka dashboard: " + e.getMessage());
             e.printStackTrace();

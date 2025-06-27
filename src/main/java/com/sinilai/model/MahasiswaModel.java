@@ -5,6 +5,7 @@ import com.sinilai.utils.Koneksi;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -376,6 +377,48 @@ public class MahasiswaModel {
             case "p", "perempuan", "wanita" -> "Perempuan";
             default -> jk;
         };
+    }
+
+    public static MahasiswaModel getByUserId(int userId) {
+        String query = "SELECT * FROM mahasiswa WHERE user_id = ?";
+
+        try (Connection conn = Koneksi.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                MahasiswaModel mhs = new MahasiswaModel();
+                mhs.setId(rs.getInt("id"));
+                mhs.setNim(rs.getString("nim"));
+                mhs.setJurusan(rs.getString("jurusan"));
+                mhs.setProdi(rs.getString("prodi"));
+                mhs.setSemester(rs.getInt("semester"));
+                mhs.setJalurSeleksi(rs.getString("jalur_seleksi"));
+                mhs.setAsalSekolah(rs.getString("asal_sekolah"));
+                mhs.setTtl(rs.getDate("ttl"));
+                mhs.setAgama(rs.getString("agama"));
+                mhs.setJk(rs.getString("jk"));
+                mhs.setAlamat(rs.getString("alamat"));
+                mhs.setKota(rs.getString("kota"));
+                mhs.setProv(rs.getString("prov"));
+                mhs.setNoTelp(rs.getString("no_telp"));
+                mhs.setPendidikanAkhir(rs.getString("pendidikan_akhir"));
+                mhs.setStatusMenikah(rs.getString("status_menikah"));
+                mhs.setTempatTinggal(rs.getString("tempat_tinggal"));
+                mhs.setSumberUang(rs.getString("sumber_uang"));
+                mhs.setNik(rs.getString("nik"));
+                mhs.setNoKk(rs.getString("no_kk"));
+
+                return mhs;
+            }
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Gagal mengambil data mahasiswa dengan user_id: " + userId, e);
+        }
+
+        return null;
     }
 
     @Override

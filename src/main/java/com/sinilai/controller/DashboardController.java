@@ -2,10 +2,13 @@ package com.sinilai.controller;
 
 import com.sinilai.model.MahasiswaModel;
 import com.sinilai.model.UserModel;
+import com.sinilai.utils.Session;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -87,6 +90,17 @@ public class DashboardController {
             setupEventHandlers();
             initializeDefaultValues();
 
+            currentUser = Session.getUser();
+            currentMahasiswa = Session.getMahasiswa();
+
+            if (Session.getUser() != null) {
+                updateDashboardInfo(); // langsung update
+            } else {
+                LOGGER.warning("Session kosong, redirect ke login...");
+                redirectToLogin();
+                return;
+            }
+
             LOGGER.info("DashboardController initialized successfully");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error during DashboardController initialization", e);
@@ -157,29 +171,6 @@ public class DashboardController {
     }
 
     /**
-     * Set hanya data user (tanpa mahasiswa)
-     */
-    public void setUser(UserModel user) {
-        try {
-            if (user == null) {
-                throw new IllegalArgumentException("Data user tidak boleh null");
-            }
-
-            this.currentUser = user;
-            this.currentMahasiswa = null;
-
-            Platform.runLater(this::updateDashboardInfo);
-
-            LOGGER.info("User data set successfully: " + user.getNama());
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error setting user data", e);
-            showAlert(Alert.AlertType.ERROR, "Error",
-                    "Gagal memuat data user: " + e.getMessage());
-        }
-    }
-
-    /**
      * Validate input data
      */
     private void validateInputData(MahasiswaModel mahasiswa, UserModel user) {
@@ -196,6 +187,10 @@ public class DashboardController {
      * Update informasi dashboard
      */
     private void updateDashboardInfo() {
+        if (currentUser == null) {
+            currentUser = Session.getUser(); // ambil dari session kalau belum diset
+        }
+
         if (currentUser == null) {
             LOGGER.warning("Cannot update dashboard info - user data is null");
             return;
@@ -249,9 +244,13 @@ public class DashboardController {
         try {
             LOGGER.info("Profil button clicked");
 
-            if (currentUser == null) {
+            UserModel user = Session.getUser();
+            MahasiswaModel mahasiswa = Session.getMahasiswa();
+
+            if (user == null) {
                 showAlert(Alert.AlertType.WARNING, "Warning",
                         "Data user tidak tersedia. Silakan login ulang.");
+                redirectToLogin();
                 return;
             }
 
@@ -260,15 +259,12 @@ public class DashboardController {
 
             ProfilController controller = loader.getController();
 
-            // Pass data to profile controller
-            if (currentMahasiswa != null) {
-                controller.setMahasiswa(currentMahasiswa, currentUser);
+            if (mahasiswa != null) {
+                controller.setMahasiswa(mahasiswa, user);
             } else {
-                // Handle case where mahasiswa data might not be available
                 LOGGER.warning("Mahasiswa data not available for profile view");
                 showAlert(Alert.AlertType.INFORMATION, "Info",
                         "Data mahasiswa belum lengkap. Beberapa informasi mungkin tidak tersedia.");
-                // You might want to create a default MahasiswaModel or handle this differently
             }
 
             Stage stage = (Stage) profilButton.getScene().getWindow();
@@ -344,8 +340,8 @@ public class DashboardController {
     private void performLogout() {
         try {
             // Clear current data
-            currentUser = null;
-            currentMahasiswa = null;
+            Session.setUser(null);
+            Session.setMahasiswa(null);
 
             // Load login view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/LoginView.fxml"));
@@ -453,6 +449,19 @@ public class DashboardController {
             updateLabel(semesterLabel, semester.trim());
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error updating semester", e);
+        }
+    }
+
+    private void redirectToLogin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/LoginView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) namaMahasiswaLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login - SINILAI");
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.severe("Gagal redirect ke login: " + e.getMessage());
         }
     }
 }

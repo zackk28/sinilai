@@ -2,6 +2,8 @@ package com.sinilai.controller;
 
 import com.sinilai.model.MahasiswaModel;
 import com.sinilai.model.UserModel;
+import com.sinilai.utils.Session;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -69,11 +72,24 @@ public class ProfilController {
     private void initialize() {
         try {
             LOGGER.info("Initializing ProfilController...");
+
             setupTableColumns();
             setupNavigationButtons();
             setupImageView();
             isInitialized = true;
+
+            // Ambil dari session
+            currentUser = Session.getUser();
+            currentMahasiswa = Session.getMahasiswa();
+
+            if (currentUser != null || currentMahasiswa != null) {
+                refreshData();
+            } else {
+                LOGGER.warning("User atau Mahasiswa di session kosong");
+            }
+
             LOGGER.info("ProfilController initialized successfully");
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error during initialization", e);
             showAlert("Error", "Gagal menginisialisasi controller: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -213,30 +229,32 @@ public class ProfilController {
             return;
         }
 
-        this.currentMahasiswa = mahasiswa;
         this.currentUser = user;
+        this.currentMahasiswa = mahasiswa;
 
-        if (isInitialized) {
-            refreshData();
-        } else {
-            // Wait for initialization to complete
-            Platform.runLater(() -> {
-                if (isInitialized) {
-                    refreshData();
-                }
-            });
-        }
+        // Jika memang ingin ubah session juga
+        Session.setUser(user);
+        Session.setMahasiswa(mahasiswa);
 
         LOGGER.info("Mahasiswa data set successfully for: " + user.getNama());
+
+        // Jalankan refresh di thread JavaFX
+        Platform.runLater(this::refreshData);
     }
 
     /**
      * Refresh tampilan data
      */
     public void refreshData() {
-        if (!isInitialized || currentMahasiswa == null || currentUser == null) {
+        if (!isInitialized || currentUser == null) {
             LOGGER.warning("Cannot refresh data - not properly initialized");
             return;
+        }
+
+        if (currentMahasiswa == null) {
+            LOGGER.info("Mahasiswa data is empty, prompting user to lengkapi data");
+            showAlert("Lengkapi Data", "Anda belum melengkapi data mahasiswa. Silakan klik 'Ubah Data'.",
+                    Alert.AlertType.INFORMATION);
         }
 
         try {
@@ -255,11 +273,20 @@ public class ProfilController {
      */
     private void updateLabels() {
         try {
-            String nama = currentUser.getNama() != null ? currentUser.getNama() : "Nama tidak tersedia";
-            String nim = currentMahasiswa.getNim() != null ? currentMahasiswa.getNim() : "-";
-            String email = currentUser.getEmail() != null ? currentUser.getEmail() : "-";
-            String jurusan = currentMahasiswa.getJurusan() != null ? currentMahasiswa.getJurusan() : "-";
-            String prodi = currentMahasiswa.getProdi() != null ? currentMahasiswa.getProdi() : "-";
+            LOGGER.info("[ProfilController] updateLabels called");
+
+            String nama = currentUser != null && currentUser.getNama() != null ? currentUser.getNama()
+                    : "Nama tidak tersedia";
+            String nim = "-";
+            String email = currentUser != null && currentUser.getEmail() != null ? currentUser.getEmail() : "-";
+            String jurusan = "-";
+            String prodi = "-";
+
+            if (currentMahasiswa != null) {
+                nim = currentMahasiswa.getNim() != null ? currentMahasiswa.getNim() : "-";
+                jurusan = currentMahasiswa.getJurusan() != null ? currentMahasiswa.getJurusan() : "-";
+                prodi = currentMahasiswa.getProdi() != null ? currentMahasiswa.getProdi() : "-";
+            }
 
             if (namaMahasiswaLabel != null)
                 namaMahasiswaLabel.setText(nama);
@@ -305,40 +332,39 @@ public class ProfilController {
     private Map<String, String> createDataMap() {
         Map<String, String> map = new LinkedHashMap<>();
 
-        map.put("NIM", safeGetValue(currentMahasiswa.getNim()));
         map.put("Nama", safeGetValue(currentUser.getNama()));
         map.put("Email", safeGetValue(currentUser.getEmail()));
-        map.put("Jurusan", safeGetValue(currentMahasiswa.getJurusan()));
-        map.put("Program Studi", safeGetValue(currentMahasiswa.getProdi()));
-        map.put("Semester", String.valueOf(currentMahasiswa.getSemester()));
 
-        // Handle additional fields if they exist
-        if (currentMahasiswa.getJalurSeleksi() != null) {
-            map.put("Jalur Seleksi", safeGetValue(currentMahasiswa.getJalurSeleksi()));
-        }
-        if (currentMahasiswa.getAsalSekolah() != null) {
-            map.put("Asal Sekolah", safeGetValue(currentMahasiswa.getAsalSekolah()));
-        }
-        if (currentMahasiswa.getTtl() != null) {
-            map.put("Tanggal Lahir", currentMahasiswa.getTtl().toString());
-        }
-        if (currentMahasiswa.getAgama() != null) {
-            map.put("Agama", safeGetValue(currentMahasiswa.getAgama()));
-        }
-        if (currentMahasiswa.getJkDisplay() != null) {
-            map.put("Jenis Kelamin", safeGetValue(currentMahasiswa.getJkDisplay()));
-        }
-        if (currentMahasiswa.getAlamat() != null) {
-            map.put("Alamat", safeGetValue(currentMahasiswa.getAlamat()));
-        }
-        if (currentMahasiswa.getKota() != null) {
-            map.put("Kota", safeGetValue(currentMahasiswa.getKota()));
-        }
-        if (currentMahasiswa.getProv() != null) {
-            map.put("Provinsi", safeGetValue(currentMahasiswa.getProv()));
-        }
-        if (currentMahasiswa.getNoTelp() != null) {
-            map.put("No Telepon", safeGetValue(currentMahasiswa.getNoTelp()));
+        if (currentMahasiswa != null) {
+            map.put("NIM", safeGetValue(currentMahasiswa.getNim()));
+            map.put("Jurusan", safeGetValue(currentMahasiswa.getJurusan()));
+            map.put("Program Studi", safeGetValue(currentMahasiswa.getProdi()));
+            map.put("Semester", String.valueOf(currentMahasiswa.getSemester()));
+
+            if (currentMahasiswa.getJalurSeleksi() != null)
+                map.put("Jalur Seleksi", safeGetValue(currentMahasiswa.getJalurSeleksi()));
+            if (currentMahasiswa.getAsalSekolah() != null)
+                map.put("Asal Sekolah", safeGetValue(currentMahasiswa.getAsalSekolah()));
+            if (currentMahasiswa.getTtl() != null)
+                map.put("Tanggal Lahir", currentMahasiswa.getTtl().toString());
+            if (currentMahasiswa.getAgama() != null)
+                map.put("Agama", safeGetValue(currentMahasiswa.getAgama()));
+            if (currentMahasiswa.getJkDisplay() != null)
+                map.put("Jenis Kelamin", safeGetValue(currentMahasiswa.getJkDisplay()));
+            if (currentMahasiswa.getAlamat() != null)
+                map.put("Alamat", safeGetValue(currentMahasiswa.getAlamat()));
+            if (currentMahasiswa.getKota() != null)
+                map.put("Kota", safeGetValue(currentMahasiswa.getKota()));
+            if (currentMahasiswa.getProv() != null)
+                map.put("Provinsi", safeGetValue(currentMahasiswa.getProv()));
+            if (currentMahasiswa.getNoTelp() != null)
+                map.put("No Telepon", safeGetValue(currentMahasiswa.getNoTelp()));
+
+        } else {
+            map.put("NIM", "-");
+            map.put("Jurusan", "-");
+            map.put("Program Studi", "-");
+            map.put("Semester", "-");
         }
 
         return map;
@@ -408,22 +434,26 @@ public class ProfilController {
     @FXML
     private void handleUbahData(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/ProfileUpdate.fxml"));
+            Session.setUser(currentUser);
+            Session.setMahasiswa(currentMahasiswa);
+
+            URL fxmlUrl = getClass().getResource("/com/sinilai/view/ProfileUpdateView.fxml");
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
-            // Kirim data ke controller update (jika perlu)
             ProfileUpdateController controller = loader.getController();
-            controller.setCurrentNim(currentMahasiswa.getNim()); // pastikan variabel currentMahasiswa ada dan sudah
-                                                                 // diset
+            if (currentMahasiswa != null) {
+                controller.setMahasiswa(currentMahasiswa);
+            }
 
-            // Ganti scene
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "Gagal membuka halaman update profil: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Maaf", "Terjadi kesalahan saat membuka halaman. Silakan coba lagi nanti.",
+                    Alert.AlertType.ERROR);
         }
     }
 

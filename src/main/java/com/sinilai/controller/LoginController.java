@@ -1,7 +1,9 @@
 package com.sinilai.controller;
 
+import com.sinilai.model.MahasiswaModel;
 import com.sinilai.model.UserModel;
 import com.sinilai.utils.Koneksi;
+import com.sinilai.utils.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +30,48 @@ public class LoginController {
     @FXML
     private Hyperlink signUpLink;
 
+    private MahasiswaModel findMahasiswaByUserId(int userId) {
+        String sql = """
+                    SELECT m.*, u.nama, u.email, u.password, u.role
+                    FROM mahasiswa m
+                    JOIN user u ON m.id = u.id
+                    WHERE m.id = ?
+                """;
+
+        try (Connection conn = Koneksi.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                MahasiswaModel mhs = new MahasiswaModel();
+                mhs.setId(rs.getInt("id"));
+                mhs.setNim(rs.getString("nim"));
+                mhs.setJurusan(rs.getString("jurusan"));
+                mhs.setProdi(rs.getString("prodi"));
+                // dst...
+
+                UserModel user = new UserModel();
+                user.setId(rs.getInt("id")); // sama dengan mahasiswa.id
+                user.setNama(rs.getString("nama"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+
+                mhs.setUser(user);
+
+                return mhs;
+            }
+
+        } catch (
+
+        SQLException e) {
+            throw new RuntimeException("Gagal mengambil data mahasiswa: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
     public void initialize() {
         loginButton.setOnAction(this::handleLogin);
         if (signUpLink != null) {
@@ -51,6 +95,10 @@ public class LoginController {
             UserModel user = loginUser(email, password);
             if (user != null) {
                 showAlert(Alert.AlertType.INFORMATION, "Sukses", "Login berhasil! Selamat datang, " + user.getNama());
+                if (!"mahasiswa".equalsIgnoreCase(user.getRole())) {
+                    showAlert(Alert.AlertType.ERROR, "Gagal", "Akun ini bukan mahasiswa.");
+                    return;
+                }
                 openDashboard(user);
             } else {
                 showAlert(Alert.AlertType.ERROR, "Gagal", "Email atau Password salah!");
@@ -107,18 +155,35 @@ public class LoginController {
         }
     }
 
+    private void setSession(UserModel user, MahasiswaModel mahasiswa) {
+        Session.setUser(user);
+        Session.setMahasiswa(mahasiswa);
+    }
+
     private void openDashboard(UserModel user) {
         try {
+            MahasiswaModel mahasiswa = findMahasiswaByUserId(user.getId());
+
+            // Set session
+            setSession(user, mahasiswa);
+
+            // Load halaman dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
             Scene scene = new Scene(loader.load());
 
+            // Kirim user & mahasiswa ke controller
             DashboardController controller = loader.getController();
-            controller.setUser(user);
+            if (mahasiswa != null) {
+                controller.setMahasiswa(mahasiswa, user);
+            }
 
+            // Tampilkan scene
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setTitle("Dashboard - SINILAI");
             stage.setScene(scene);
             stage.setMaximized(true);
+            stage.show();
+
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka dashboard: " + e.getMessage());
             e.printStackTrace();

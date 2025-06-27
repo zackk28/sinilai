@@ -33,6 +33,8 @@ public class MahasiswaModel {
     private String nik;
     private String noKk;
 
+    private UserModel user;
+
     // Constructors
     public MahasiswaModel() {
     }
@@ -44,6 +46,14 @@ public class MahasiswaModel {
     }
 
     // Getter methods
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
+    }
+
     public int getId() {
         return id;
     }

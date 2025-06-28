@@ -183,13 +183,13 @@ public class MahasiswaModel {
 
     public void setJk(String jk) {
         if (jk != null) {
-            String cleanJk = jk.trim().toUpperCase();
-            if (cleanJk.equals("L") || cleanJk.equals("LAKI-LAKI") || cleanJk.equals("PRIA")) {
-                this.jk = "Laki-laki";
-            } else if (cleanJk.equals("P") || cleanJk.equals("PEREMPUAN") || cleanJk.equals("WANITA")) {
-                this.jk = "Perempuan";
+            String clean = jk.trim().toUpperCase();
+            if (clean.equals("L") || clean.equals("LAKI-LAKI") || clean.equals("PRIA")) {
+                this.jk = "L";
+            } else if (clean.equals("P") || clean.equals("PEREMPUAN") || clean.equals("WANITA")) {
+                this.jk = "P";
             } else {
-                this.jk = jk.trim();
+                this.jk = null; // invalid input
             }
         } else {
             this.jk = null;
@@ -375,6 +375,45 @@ public class MahasiswaModel {
         stmt.setInt(20, id);
     }
 
+    public boolean loadMahasiswaFromDB(int id) {
+        String query = "SELECT * FROM mahasiswa WHERE id = ?";
+        try (Connection conn = Koneksi.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            var rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                this.id = rs.getInt("id");
+                this.nim = rs.getString("nim");
+                this.jurusan = rs.getString("jurusan");
+                this.prodi = rs.getString("prodi");
+                this.jalurSeleksi = rs.getString("jalur_seleksi");
+                this.asalSekolah = rs.getString("asal_sekolah");
+                this.semester = rs.getInt("semester");
+                this.ttl = rs.getDate("ttl");
+                this.agama = rs.getString("agama");
+                this.jk = rs.getString("jk");
+                this.alamat = rs.getString("alamat");
+                this.kota = rs.getString("kota");
+                this.prov = rs.getString("prov");
+                this.noTelp = rs.getString("no_telp");
+                this.pendidikanAkhir = rs.getString("pendidikan_akhir");
+                this.statusMenikah = rs.getString("status_menikah");
+                this.tempatTinggal = rs.getString("tempat_tinggal");
+                this.sumberUang = rs.getString("sumber_uang");
+                this.nik = rs.getString("nik");
+                this.noKk = rs.getString("no_kk");
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Gagal mengambil data mahasiswa dari DB", ex);
+        }
+
+        return false;
+    }
+
     /**
      * Get display name for gender
      */
@@ -382,7 +421,7 @@ public class MahasiswaModel {
         if (jk == null)
             return "-";
         return switch (jk.toLowerCase()) {
-            case "l", "laki-laki", "pria" -> "Laki-laki";
+            case "", "laki-laki", "pria" -> "Laki-laki";
             case "p", "perempuan", "wanita" -> "Perempuan";
             default -> jk;
         };

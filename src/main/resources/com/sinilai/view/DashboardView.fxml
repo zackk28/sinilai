@@ -19,10 +19,7 @@
          style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;"
          BorderPane.alignment="CENTER">
          <children>
-            <!-- User Profile Area in Header -->
             <HBox alignment="CENTER_RIGHT" layoutX="1400.0" layoutY="25.0" spacing="15.0" />
-
-            <!-- Logo Area -->
             <Label alignment="CENTER_LEFT" layoutX="45.0" layoutY="19.0" prefHeight="32.0"
                prefWidth="200.0" text="SINILAI" textFill="#333333">
                <font>
@@ -38,14 +35,12 @@
          </children>
       </AnchorPane>
    </top>
+
    <left>
       <AnchorPane prefHeight="960.0" prefWidth="280.0"
          style="-fx-background-color: #FAFBFC; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;"
          BorderPane.alignment="CENTER">
-
          <children>
-
-            <!-- Profil User -->
             <VBox alignment="CENTER" layoutX="40.0" layoutY="40.0" spacing="15.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0"
@@ -57,11 +52,8 @@
                </children>
             </VBox>
 
-            <!-- Navigasi -->
             <VBox layoutX="25.0" layoutY="180.0" prefWidth="230.0" spacing="8.0">
                <children>
-
-                  <!-- Tombol Home (aktif) -->
                   <Button fx:id="homeButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
                      prefHeight="50.0" prefWidth="230.0"
                      style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);"
@@ -77,7 +69,6 @@
                      </padding>
                   </Button>
 
-                  <!-- Tombol Profil -->
                   <Button fx:id="profilButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
                      prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;"
                      text="Profil" textFill="#666666">
@@ -92,7 +83,6 @@
                      </padding>
                   </Button>
 
-                  <!-- Tombol KHS -->
                   <Button fx:id="khsButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
                      prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;"
                      text="KHS" textFill="#666666">
@@ -107,7 +97,6 @@
                      </padding>
                   </Button>
 
-                  <!-- Tombol Setting -->
                   <Button fx:id="settingButton" alignment="CENTER_LEFT" graphicTextGap="15.0"
                      prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;"
                      text="Setting" textFill="#666666">
@@ -121,11 +110,9 @@
                         <Insets left="20.0" />
                      </padding>
                   </Button>
-
                </children>
             </VBox>
 
-            <!-- Ilustrasi Edukasi -->
             <VBox alignment="CENTER" layoutX="25.0" layoutY="450.0" prefWidth="230.0" spacing="10.0"
                style="-fx-background-color: #F0F7FF; -fx-background-radius: 15; -fx-padding: 20;">
                <children>
@@ -145,7 +132,6 @@
                </children>
             </VBox>
 
-            <!-- Tombol Logout -->
             <Button fx:id="logoutButton" alignment="CENTER_LEFT" graphicTextGap="12.0"
                layoutX="25.0" layoutY="880.0" onAction="#handleLogout" prefHeight="45.0"
                prefWidth="180.0" style="-fx-background-color: transparent;" text="Logout"
@@ -160,7 +146,6 @@
                   <Insets left="20.0" />
                </padding>
             </Button>
-
          </children>
       </AnchorPane>
    </left>
@@ -169,7 +154,6 @@
       <Pane prefHeight="960.0" prefWidth="1340.0" style="-fx-background-color: #F5F5F5;"
          BorderPane.alignment="CENTER">
          <children>
-            <!-- Dashboard Header -->
             <VBox layoutX="50.0" layoutY="40.0" spacing="8.0">
                <children>
                   <Label text="Mahasiswa Dashboard" textFill="#333333">
@@ -182,7 +166,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="nimLabel" text="NIM" textFill="#333333">
+                  <Label fx:id="nimLabel" text="NIM: -" textFill="#333333">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -190,10 +174,8 @@
                </children>
             </VBox>
 
-            <!-- IP and Semester Cards -->
             <HBox layoutX="50.0" layoutY="180.0" prefHeight="160.0" prefWidth="900.0" spacing="40.0">
                <children>
-                  <!-- IP Card -->
                   <VBox alignment="TOP_LEFT" prefHeight="160.0" prefWidth="400.0"
                      style="-fx-background-color: #4A90E2; -fx-background-radius: 15; -fx-padding: 25;">
                      <children>
@@ -220,7 +202,6 @@
                      </children>
                   </VBox>
 
-                  <!-- Semester Card -->
                   <VBox alignment="TOP_LEFT" prefHeight="160.0" prefWidth="400.0"
                      style="-fx-background-color: #FF9500; -fx-background-radius: 15; -fx-padding: 25;">
                      <children>
@@ -249,7 +230,7 @@
                </children>
             </HBox>
 
-            <!-- Data Mahasiswa Section -->
+            <!-- ✅ Bagian Data Mahasiswa diperbaiki di sini -->
             <VBox layoutX="50.0" layoutY="390.0" prefHeight="450.0" prefWidth="1200.0"
                spacing="25.0">
                <children>
@@ -262,83 +243,51 @@
                   <VBox prefHeight="331.0" prefWidth="1135.0" spacing="25.0"
                      style="-fx-background-color: #E8E8E8; -fx-background-radius: 12; -fx-padding: 35;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="25.0">
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
                            <children>
                               <Label minWidth="100.0" text="Nama" textFill="#333333">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label text=":" textFill="#333333">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="namaDataLabel" text="-" textFill="#333333">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
+                              <Label text=":" textFill="#333333" />
+                              <Label fx:id="namaDataLabel" text="-" textFill="#333333" />
                            </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="25.0">
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
                            <children>
                               <Label minWidth="100.0" text="Email" textFill="#333333">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label text=":" textFill="#333333">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="emailDataLabel" text="-" textFill="#333333">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
+                              <Label text=":" textFill="#333333" />
+                              <Label fx:id="emailDataLabel" text="-" textFill="#333333" />
                            </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="25.0">
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
                            <children>
                               <Label minWidth="100.0" text="Role" textFill="#333333">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label text=":" textFill="#333333">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="roleDataLabel" text="-" textFill="#333333">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
+                              <Label text=":" textFill="#333333" />
+                              <Label fx:id="roleDataLabel" text="-" textFill="#333333" />
                            </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="25.0">
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
                            <children>
-                              <Label minWidth="100.0" text="ID" textFill="#333333">
+                              <Label minWidth="100.0" text="NIM" textFill="#333333">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Label text=":" textFill="#333333">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="idDataLabel" text="-" textFill="#333333">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
+                              <Label text=":" textFill="#333333" />
+                              <Label fx:id="nimDataLabel" text="-" textFill="#333333" />
                            </children>
                         </HBox>
                      </children>

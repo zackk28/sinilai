@@ -181,7 +181,7 @@
                             </children>
                         </HBox>
 
-                        <TableView fx:id="dataTable" style="-fx-background-color: white; -fx-background-radius: 8;">
+                        <TableView fx:id="dataTable" prefHeight="478.0" prefWidth="1560.0" style="-fx-background-color: white; -fx-background-radius: 8;">
                             <columns>
                                 <TableColumn fx:id="fieldColumn" prefWidth="250" text="Field" />
                                 <TableColumn fx:id="valueColumn" prefWidth="550" text="Value" />

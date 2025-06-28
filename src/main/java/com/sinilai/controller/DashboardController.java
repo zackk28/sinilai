@@ -191,6 +191,10 @@ public class DashboardController {
             currentUser = Session.getUser(); // ambil dari session kalau belum diset
         }
 
+        if (currentMahasiswa == null) {
+            currentMahasiswa = Session.getMahasiswa(); // ambil dari session kalau belum diset
+        }
+
         if (currentUser == null) {
             LOGGER.warning("Cannot update dashboard info - user data is null");
             return;
@@ -200,22 +204,38 @@ public class DashboardController {
             String userName = currentUser.getNama();
             String userEmail = currentUser.getEmail();
             String userRole = currentUser.getRole();
-            int userId = currentUser.getId();
+            String mahasiswaNim = currentMahasiswa != null ? currentMahasiswa.getNim() : "-";
+
+            // Ambil NIM dari model mahasiswa
+            String nimDisplay = getNimDisplay();
 
             // Update labels dengan null safety
             updateLabel(namaMahasiswaLabel, userName);
             updateLabel(welcomeLabel, "Hello " + userName);
-            updateLabel(nimLabel, "ID: " + userId);
+            updateLabel(nimLabel, nimDisplay);
             updateLabel(namaDataLabel, userName);
             updateLabel(emailDataLabel, userEmail);
             updateLabel(roleDataLabel, userRole != null ? userRole : "User");
-            updateLabel(idDataLabel, String.valueOf(userId));
+            updateLabel(idDataLabel, nimDisplay); // Ubah dari userId ke nimDisplay
 
             LOGGER.info("Dashboard info updated successfully");
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error updating dashboard info", e);
         }
+    }
+
+    /**
+     * Get NIM display dari model mahasiswa
+     * 
+     * @return NIM jika tersedia, atau "-" jika tidak
+     */
+    private String getNimDisplay() {
+        if (currentMahasiswa != null && currentMahasiswa.getNim() != null &&
+                !currentMahasiswa.getNim().trim().isEmpty()) {
+            return "NIM: " + currentMahasiswa.getNim();
+        }
+        return "NIM: -";
     }
 
     /**

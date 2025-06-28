@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -120,7 +121,7 @@ public class DashboardController {
             profilButton.setOnAction(e -> handleProfil());
         }
         if (khsButton != null) {
-            khsButton.setOnAction(e -> handleKHS());
+            khsButton.setOnAction(e -> handleKHS(e));
         }
         if (settingButton != null) {
             settingButton.setOnAction(e -> handleSetting());
@@ -290,13 +291,19 @@ public class DashboardController {
      * Handle KHS button click
      */
     @FXML
-    private void handleKHS() {
-        LOGGER.info("KHS button clicked");
-        updateActiveButton(khsButton);
+    private void handleKHS(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/KhsView.fxml"));
+            Parent root = loader.load();
 
-        // TODO: Implement KHS view loading
-        showAlert(Alert.AlertType.INFORMATION, "Info",
-                "Fitur KHS akan segera tersedia");
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka halaman KHS: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**

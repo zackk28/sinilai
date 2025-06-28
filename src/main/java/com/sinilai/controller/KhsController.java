@@ -1,12 +1,17 @@
 package com.sinilai.controller;
 
 import com.sinilai.model.KhsModel;
+import com.sinilai.model.MahasiswaModel;
+import com.sinilai.model.UserModel;
+import com.sinilai.utils.Koneksi;
 import com.sinilai.utils.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -100,13 +105,78 @@ public class KhsController {
     return bobot * sks;
   }
 
+  private MahasiswaModel currentMahasiswa;
+  private UserModel currentUser;
+
   @FXML
   public void initialize() {
-    namaMahasiswaLabel.setText(Session.getUser().getNama());
-    namaKhsLabel.setText(Session.getUser().getNama());
+    currentUser = Session.getUser();
+    currentMahasiswa = Session.getMahasiswa();
+
+    namaMahasiswaLabel.setText(currentUser.getNama());
+    namaKhsLabel.setText(currentUser.getNama());
+    setupNavigationButtons();
 
     setupTable();
     loadTahunAjaran();
+    loadDataKhs();
+  }
+
+  /**
+   * Setup navigation buttons
+   */
+  private void setupNavigationButtons() {
+    if (homeButton != null) {
+      homeButton.setOnAction(this::handleHomeNavigation);
+    }
+    if (profilButton != null) {
+      profilButton.setOnAction(this::handleProfilNavigation);
+    }
+    if (settingButton != null) {
+      settingButton.setOnAction(this::handleSettingNavigation);
+    }
+  }
+
+  @FXML
+  private void handleHomeNavigation(ActionEvent event) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
+      Parent root = loader.load();
+
+      DashboardController controller = loader.getController();
+      controller.setMahasiswaAndUser(currentMahasiswa, currentUser);
+
+      Stage stage = (Stage) homeButton.getScene().getWindow();
+      Scene scene = new Scene(root);
+      stage.setScene(scene);
+      stage.setTitle("Dashboard - SINILAI");
+
+    } catch (IOException e) {
+      LOGGER.log(Level.SEVERE, "Error navigating to home", e);
+      showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka halaman dashboard");
+    }
+  }
+
+  @FXML
+  private void handleProfilNavigation(ActionEvent event) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/ProfilView.fxml"));
+      Parent root = loader.load();
+
+      Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+
+    } catch (IOException e) {
+      showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka halaman Profil: " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  @FXML
+  private void handleSettingNavigation(ActionEvent event) {
+    // TODO: Implement Settings navigation
+    showAlert(Alert.AlertType.INFORMATION, "Info", "Fitur Setting sedang dalam pengembangan");
   }
 
   private void setupTable() {
@@ -117,6 +187,46 @@ public class KhsController {
     nilaiHurufColumn.setCellValueFactory(new PropertyValueFactory<>("nilaiHuruf"));
 
     khsTableView.setItems(khsData);
+  }
+
+  private void loadDataKhs() {
+    String sql = """
+            SELECT m.kode_matkul AS kode, m.nama_matkul, m.sks,
+                   (n.total_skor / 25) AS nilai_mutu,
+                   CASE
+                       WHEN n.total_skor >= 85 THEN 'A'
+                       WHEN n.total_skor >= 70 THEN 'B'
+                       WHEN n.total_skor >= 55 THEN 'C'
+                       WHEN n.total_skor >= 40 THEN 'D'
+                       ELSE 'E'
+                   END AS nilai_huruf
+            FROM nilai n
+            JOIN kelas k ON n.id_kelas = k.id
+            JOIN matkul m ON k.id_matkul = m.id
+            WHERE n.id_mahasiswa = ?
+        """;
+
+    try (Connection conn = Koneksi.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+      stmt.setInt(1, Session.getMahasiswa().getId()); // ambil dari sesi login
+
+      ResultSet rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        KhsModel model = new KhsModel();
+        model.setKode(rs.getString("kode"));
+        model.setNamaMatkul(rs.getString("nama_matkul"));
+        model.setSks(rs.getInt("sks"));
+        model.setNilaiMutu(rs.getDouble("nilai_mutu"));
+        model.setNilaiHuruf(rs.getString("nilai_huruf"));
+
+        khsData.add(model);
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   private void loadTahunAjaran() {

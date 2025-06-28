@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -258,10 +259,8 @@ public class ProfilController {
         }
 
         try {
-            Platform.runLater(() -> {
-                updateLabels();
-                updateTableData();
-            });
+            updateLabels();
+            updateTableData();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error refreshing data", e);
             showAlert("Error", "Gagal memuat data profil: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -512,8 +511,18 @@ public class ProfilController {
 
     @FXML
     private void handleKhsNavigation(ActionEvent event) {
-        // TODO: Implement KHS navigation
-        showAlert("Info", "Fitur KHS sedang dalam pengembangan", Alert.AlertType.INFORMATION);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/KhsView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            showAlert("Error", "Gagal membuka halaman KHS: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -531,21 +540,6 @@ public class ProfilController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    /**
-     * Internal method untuk menampilkan alert
-     */
-    private void showAlertInternal(String title, String message, Alert.AlertType type) {
-        try {
-            Alert alert = new Alert(type);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error showing alert", e);
-        }
     }
 
     // Getter methods

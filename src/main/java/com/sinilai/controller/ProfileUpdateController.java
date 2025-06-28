@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sinilai.model.MahasiswaModel;
 import com.sinilai.model.UserModel;
@@ -108,6 +111,8 @@ public class ProfileUpdateController implements Initializable {
     private MahasiswaModel currentMahasiswa;
     private UserModel currentUser;
 
+    private static final Logger LOGGER = Logger.getLogger(ProfileUpdateController.class.getName());
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupComboBoxes();
@@ -143,7 +148,7 @@ public class ProfileUpdateController implements Initializable {
 
         // Setup Jenis Kelamin ComboBox
         ObservableList<String> jenisKelaminList = FXCollections.observableArrayList(
-                "L", "P");
+                "Laki-laki", "Perempuan");
         jenisKelaminComboBox.setItems(jenisKelaminList);
 
         // Setup Sumber Uang Sekolah ComboBox
@@ -183,7 +188,7 @@ public class ProfileUpdateController implements Initializable {
             if ("Logout".equals(selected)) {
                 handleLogout();
             } else if ("Profile".equals(selected)) {
-                handleNavigation("Profile.fxml");
+                handleNavigation("ProfileView.fxml");
             }
         });
     }
@@ -210,30 +215,63 @@ public class ProfileUpdateController implements Initializable {
     }
 
     private void loadFormData() {
-        if (isMockData()) {
-            loadMockFormData();
+        MahasiswaModel mhs = getMahasiswaFromDB();
+
+        if (mhs == null) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Data mahasiswa tidak ditemukan.");
             return;
         }
+
+        tempatTglLahirField.setValue(mhs.getTtl().toLocalDate());
+        nomorKKField.setText(mhs.getNoKk());
+        agamaComboBox.setValue(mhs.getAgama());
+        nikField.setText(mhs.getNik());
+        jenisKelaminComboBox.setValue(mhs.getJkLabel());
+        sumberUangSekolahComboBox.setValue(mhs.getSumberUang());
+        alamatSekarangField.setText(mhs.getAlamat());
+        pendidikanTerakhirComboBox.setValue(mhs.getPendidikanAkhir());
+        kotaKabupatenField.setText(mhs.getKota());
+        nomorTeleponField.setText(mhs.getNoTelp());
+        provinsiField.setText(mhs.getProv());
+        statusMenikahComboBox.setValue(mhs.getStatusMenikah());
+        statusTempatTinggalField.setText(mhs.getTempatTinggal());
     }
 
-    private boolean isMockData() {
-        return true; // ubah ke false jika sudah pakai DB
-    }
+    private MahasiswaModel getMahasiswaFromDB() {
+        String sql = "SELECT * FROM mahasiswa WHERE nim = ?";
+        MahasiswaModel mhs = null;
 
-    private void loadMockFormData() {
-        tempatTglLahirField.setValue(LocalDate.of(2000, 1, 15));
-        nomorKKField.setText("1371010101010001");
-        agamaComboBox.setValue("Islam");
-        nikField.setText("1371010101010001");
-        jenisKelaminComboBox.setValue("Laki-laki");
-        sumberUangSekolahComboBox.setValue("Orang Tua");
-        alamatSekarangField.setText("Jl. Sudirman No. 123");
-        pendidikanTerakhirComboBox.setValue("SMA/SMK");
-        kotaKabupatenField.setText("Padang");
-        nomorTeleponField.setText("08123456789");
-        provinsiField.setText("Sumatera Barat");
-        statusMenikahComboBox.setValue("Belum Menikah");
-        statusTempatTinggalField.setText("Kos");
+        try (Connection conn = com.sinilai.utils.Koneksi.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, Session.getMahasiswa().getNim());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                mhs = new MahasiswaModel();
+                mhs.setNim(rs.getString("nim"));
+                mhs.setTtl(rs.getDate("ttl"));
+                mhs.setNik(rs.getString("nik"));
+                mhs.setNoKk(rs.getString("no_kk"));
+                mhs.setAgama(rs.getString("agama"));
+                mhs.setJk(rs.getString("jk"));
+                mhs.setAlamat(rs.getString("alamat"));
+                mhs.setKota(rs.getString("kota"));
+                mhs.setProv(rs.getString("prov"));
+                mhs.setNoTelp(rs.getString("no_telp"));
+                mhs.setSumberUang(rs.getString("sumber_uang"));
+                mhs.setPendidikanAkhir(rs.getString("pendidikan_akhir"));
+                mhs.setStatusMenikah(rs.getString("status_menikah"));
+                mhs.setTempatTinggal(rs.getString("tempat_tinggal"));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Gagal mengambil data mahasiswa dari DB", e);
+            showAlert(Alert.AlertType.ERROR, "Error",
+                    "Terjadi kesalahan saat mengambil data mahasiswa: " + e.getMessage());
+        }
+
+        return mhs;
     }
 
     @FXML
@@ -281,6 +319,7 @@ public class ProfileUpdateController implements Initializable {
                 updated.setNoKk(nomorKKField.getText());
                 updated.setAgama(agamaComboBox.getValue());
                 String jkPilihan = jenisKelaminComboBox.getValue();
+                System.out.println("Pilihan ComboBox: " + jkPilihan); // debug
                 if ("Laki-laki".equals(jkPilihan)) {
                     updated.setJk("L");
                 } else if ("Perempuan".equals(jkPilihan)) {

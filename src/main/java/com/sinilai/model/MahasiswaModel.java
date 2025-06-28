@@ -94,6 +94,20 @@ public class MahasiswaModel {
         return jk;
     }
 
+    public String getJkLabel() {
+        if (jk == null)
+            return null;
+
+        switch (jk.trim().toUpperCase()) {
+            case "L":
+                return "Laki-laki";
+            case "P":
+                return "Perempuan";
+            default:
+                return jk;
+        }
+    }
+
     public String getAlamat() {
         return alamat;
     }
@@ -182,18 +196,7 @@ public class MahasiswaModel {
     }
 
     public void setJk(String jk) {
-        if (jk != null) {
-            String cleanJk = jk.trim().toUpperCase();
-            if (cleanJk.equals("L") || cleanJk.equals("LAKI-LAKI") || cleanJk.equals("PRIA")) {
-                this.jk = "Laki-laki";
-            } else if (cleanJk.equals("P") || cleanJk.equals("PEREMPUAN") || cleanJk.equals("WANITA")) {
-                this.jk = "Perempuan";
-            } else {
-                this.jk = jk.trim();
-            }
-        } else {
-            this.jk = null;
-        }
+        this.jk = jk;
     }
 
     public void setAlamat(String alamat) {

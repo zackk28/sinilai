@@ -1,10 +1,15 @@
 com\sinilai\controller\ProfileUpdateController.class
 com\sinilai\App.class
-com\sinilai\controller\DashboardController.class
+com\sinilai\controller\ModalDataDosenController$1.class
 com\sinilai\controller\ProfilController.class
-com\sinilai\controller\RegisterController.class
 com\sinilai\utils\Koneksi.class
+com\sinilai\controller\ModalDataDosenController.class
 com\sinilai\model\MahasiswaModel.class
+com\sinilai\controller\ProfileUpdateController$1.class
+com\sinilai\controller\DashboardDosenController.class
+com\sinilai\model\DosenModel.class
+com\sinilai\controller\DashboardController.class
+com\sinilai\controller\RegisterController.class
 com\sinilai\model\UserModel.class
 com\sinilai\controller\LoginController.class
 com\sinilai\utils\Session.class

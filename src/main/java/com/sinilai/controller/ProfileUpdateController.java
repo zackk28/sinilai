@@ -6,7 +6,6 @@ import com.sinilai.utils.Koneksi;
 import com.sinilai.utils.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +30,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for Profile Update functionality
- * Handles student profile data modification and persistence
- */
 public class ProfileUpdateController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(ProfileUpdateController.class.getName());
@@ -42,64 +38,34 @@ public class ProfileUpdateController implements Initializable {
     private static final int NIK_LENGTH = 16;
     private static final int KK_LENGTH = 16;
     private static final int MAX_SEMESTER = 14;
+    private static final int MIN_AGE = 15;
+    private static final int MAX_AGE = 100;
 
-    // Header Labels
+    // FXML Components
     @FXML
     private Label namaMahasiswaLabel;
-
-    // Navigation Buttons
     @FXML
     private Button homeButton, profilButton, khsButton, settingButton, logoutButton, backButton;
-
-    // Profile Section
     @FXML
     private ImageView profileImageView;
     @FXML
     private Button uploadPhotoButton;
     @FXML
     private Label namaProfilLabel, nimLabel, emailLabel, jurusanLabel, prodiLabel;
-
-    // Form Fields
     @FXML
-    private TextField nimField;
+    private TextField nimField, jurusanField, prodiField, jalurSeleksiField, asalSekolahField;
     @FXML
-    private TextField jurusanField;
+    private TextField alamatField, kotaField, provinsiField, noTeleponField, tempatTinggalField;
     @FXML
-    private TextField prodiField;
+    private TextField nikField, noKKField;
     @FXML
-    private ComboBox<String> semesterComboBox;
+    private ComboBox<String> kelasComboBox, agamaComboBox, jenisKelaminComboBox;
     @FXML
-    private TextField jalurSeleksiField;
+    private ComboBox<String> pendidikanAkhirComboBox, statusMenikahComboBox, sumberUangComboBox;
     @FXML
-    private TextField asalSekolahField;
+    private ComboBox<Integer> semesterComboBox;
     @FXML
     private DatePicker ttlField;
-    @FXML
-    private ComboBox<String> agamaComboBox;
-    @FXML
-    private ComboBox<String> jenisKelaminComboBox;
-    @FXML
-    private TextField alamatField;
-    @FXML
-    private TextField kotaField;
-    @FXML
-    private TextField provinsiField;
-    @FXML
-    private TextField noTeleponField;
-    @FXML
-    private ComboBox<String> pendidikanAkhirComboBox;
-    @FXML
-    private ComboBox<String> statusMenikahComboBox;
-    @FXML
-    private TextField tempatTinggalField;
-    @FXML
-    private ComboBox<String> sumberUangComboBox;
-    @FXML
-    private TextField nikField;
-    @FXML
-    private TextField noKKField;
-
-    // Action Buttons
     @FXML
     private Button batalButton, simpanButton;
 
@@ -109,23 +75,96 @@ public class ProfileUpdateController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            setupComboBoxes();
-            setupNavigation();
+            // First check session validity
+            if (!isSessionValid()) {
+                redirectToLogin();
+                return;
+            }
+
+            initializeComponents();
             loadSessionData();
             populateFormData();
-            setupFieldValidation();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error during initialization", e);
-            showAlert(Alert.AlertType.ERROR, "Initialization Error",
-                    "Failed to initialize the form: " + e.getMessage());
+            handleInitializationError(e);
         }
     }
 
-    /**
-     * Setup all ComboBox options with proper data
-     */
+    // ================= SESSION MANAGEMENT =================
+    private boolean isSessionValid() {
+        currentUser = Session.getUser();
+        currentMahasiswa = Session.getMahasiswa();
+
+        if (currentUser == null || currentMahasiswa == null) {
+            LOGGER.warning("Session validation failed: User or Mahasiswa is null");
+            return false;
+        }
+
+        try {
+            // Verify the relationship between user and mahasiswa
+            if (currentMahasiswa.getId() != currentUser.getId()) {
+                LOGGER.warning("Session validation failed: User-Mahasiswa ID mismatch");
+                return false;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error during session validation", e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void redirectToLogin() {
+        Session.clear();
+        showAlertAndNavigate("Session Invalid", "Your session has expired. Please login again.", "Login.fxml");
+    }
+
+    // ================= UI INITIALIZATION =================
+    private void initializeComponents() {
+        setupComboBoxes();
+        setupNavigation();
+        setupFieldValidation();
+    }
+
     private void setupComboBoxes() {
-        setupSemesterComboBox();
+        // Semester ComboBox with Integer values
+        semesterComboBox.setConverter(new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer object) {
+                return object != null ? object.toString() : "";
+            }
+
+            @Override
+            public Integer fromString(String string) {
+                try {
+                    return string.isEmpty() ? null : Integer.parseInt(string);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        });
+
+        ObservableList<Integer> semesterOptions = FXCollections.observableArrayList();
+        for (int i = 1; i <= MAX_SEMESTER; i++) {
+            semesterOptions.add(i);
+        }
+        semesterComboBox.setItems(semesterOptions);
+
+        // Kelas ComboBox
+        ObservableList<String> kelasOptions = FXCollections.observableArrayList(
+                "TRPL 1A", "TRPL 1B", "TRPL 1C", "TRPL 1D",
+                "TRPL 2A", "TRPL 2B", "TRPL 2C", "TRPL 2D",
+                "TRPL 3A", "TRPL 3B", "TRPL 3C", "TRPL 3D",
+                "TRPL 4A", "TRPL 4B", "TRPL 4C", "TRPL 4D",
+                "MI 1A", "MI 1B", "MI 1C",
+                "MI 2A", "MI 2B", "MI 2C",
+                "MI 3A", "MI 3B", "MI 3C",
+                "TK 1A", "TK 1B",
+                "TK 2A", "TK 2B",
+                "TK 3A", "TK 3B",
+                "ANIMASI 1A", "ANIMASI 1B");
+        kelasComboBox.setItems(kelasOptions);
+
+        // Other ComboBox setups...
         setupAgamaComboBox();
         setupJenisKelaminComboBox();
         setupPendidikanComboBox();
@@ -133,369 +172,239 @@ public class ProfileUpdateController implements Initializable {
         setupSumberUangComboBox();
     }
 
-    private void setupSemesterComboBox() {
-        if (semesterComboBox != null) {
-            ObservableList<String> semesterOptions = FXCollections.observableArrayList();
-            for (int i = 1; i <= MAX_SEMESTER; i++) {
-                semesterOptions.add("Semester " + i);
-            }
-            semesterComboBox.setItems(semesterOptions);
-        }
-    }
-
     private void setupAgamaComboBox() {
-        if (agamaComboBox != null) {
-            ObservableList<String> agamaOptions = FXCollections.observableArrayList(
-                    "Islam", "Kristen Protestan", "Kristen Katolik",
-                    "Hindu", "Buddha", "Khonghucu", "Kepercayaan");
-            agamaComboBox.setItems(agamaOptions);
-        }
+        ObservableList<String> agamaOptions = FXCollections.observableArrayList(
+                "Islam", "Kristen Protestan", "Kristen Katolik",
+                "Hindu", "Buddha", "Khonghucu", "Kepercayaan");
+        agamaComboBox.setItems(agamaOptions);
     }
 
     private void setupJenisKelaminComboBox() {
-        if (jenisKelaminComboBox != null) {
-            ObservableList<String> jenisKelaminOptions = FXCollections.observableArrayList("L", "P");
-            jenisKelaminComboBox.setItems(jenisKelaminOptions);
-        }
+        ObservableList<String> jenisKelaminOptions = FXCollections.observableArrayList("L", "P");
+        jenisKelaminComboBox.setItems(jenisKelaminOptions);
     }
 
     private void setupPendidikanComboBox() {
-        if (pendidikanAkhirComboBox != null) {
-            ObservableList<String> pendidikanOptions = FXCollections.observableArrayList(
-                    "SD/Sederajat", "SMP/Sederajat", "SMA/SMK/Sederajat",
-                    "D1", "D2", "D3", "D4/S1", "S2", "S3");
-            pendidikanAkhirComboBox.setItems(pendidikanOptions);
-        }
+        ObservableList<String> pendidikanOptions = FXCollections.observableArrayList(
+                "SD/Sederajat", "SMP/Sederajat", "SMA/SMK/Sederajat",
+                "D1", "D2", "D3", "D4/S1", "S2", "S3");
+        pendidikanAkhirComboBox.setItems(pendidikanOptions);
     }
 
     private void setupStatusMenikahComboBox() {
-        if (statusMenikahComboBox != null) {
-            ObservableList<String> statusMenikahOptions = FXCollections.observableArrayList(
-                    "Belum Menikah", "Menikah", "Cerai Hidup", "Cerai Mati");
-            statusMenikahComboBox.setItems(statusMenikahOptions);
-        }
+        ObservableList<String> statusMenikahOptions = FXCollections.observableArrayList(
+                "Belum Menikah", "Menikah", "Cerai Hidup", "Cerai Mati");
+        statusMenikahComboBox.setItems(statusMenikahOptions);
     }
 
     private void setupSumberUangComboBox() {
-        if (sumberUangComboBox != null) {
-            ObservableList<String> sumberUangOptions = FXCollections.observableArrayList(
-                    // Family sources
-                    "Orang Tua", "Wali", "Keluarga", "Ayah", "Ibu", "Kakek/Nenek", "Saudara",
-
-                    // Government scholarships
-                    "Beasiswa Pemerintah", "Beasiswa LPDP", "Beasiswa Bidikmisi",
-                    "Beasiswa KIP Kuliah", "Beasiswa Unggulan", "Beasiswa Prestasi",
-                    "Beasiswa Daerah", "Bantuan Pemerintah Daerah", "Dana BOS",
-
-                    // Institutional support
-                    "Beasiswa Institusi/Yayasan", "Beasiswa Perusahaan", "Beasiswa Bank",
-                    "Beasiswa Organisasi Kemasyarakatan", "Beasiswa Alumni",
-                    "Bantuan Sosial", "Zakat/Infaq/Sedekah",
-
-                    // Self-funded
-                    "Usaha Sendiri", "Kerja Sambilan", "Tabungan Sendiri",
-                    "Investasi", "Bisnis Online",
-
-                    // Loans
-                    "Pinjaman Bank", "Kredit Pendidikan", "Pinjaman Koperasi",
-                    "Pinjaman Keluarga", "Arisan",
-
-                    // Others
-                    "Campuran (Gabungan Beberapa Sumber)", "Lainnya");
-
-            sumberUangComboBox.setItems(sumberUangOptions);
-            sumberUangComboBox.setValue("Orang Tua"); // Default value
-        }
+        ObservableList<String> sumberUangOptions = FXCollections.observableArrayList(
+                "Orang Tua", "Wali", "Keluarga", "Ayah", "Ibu", "Kakek/Nenek", "Saudara",
+                "Beasiswa Pemerintah", "Beasiswa LPDP", "Beasiswa Bidikmisi",
+                "Beasiswa KIP Kuliah", "Beasiswa Unggulan", "Beasiswa Prestasi",
+                "Beasiswa Daerah", "Bantuan Pemerintah Daerah", "Dana BOS",
+                "Beasiswa Institusi/Yayasan", "Beasiswa Perusahaan", "Beasiswa Bank",
+                "Beasiswa Organisasi Kemasyarakatan", "Beasiswa Alumni",
+                "Bantuan Sosial", "Zakat/Infaq/Sedekah",
+                "Usaha Sendiri", "Kerja Sambilan", "Tabungan Sendiri",
+                "Investasi", "Bisnis Online",
+                "Pinjaman Bank", "Kredit Pendidikan", "Pinjaman Koperasi",
+                "Pinjaman Keluarga", "Arisan",
+                "Campuran (Gabungan Beberapa Sumber)", "Lainnya");
+        sumberUangComboBox.setItems(sumberUangOptions);
+        sumberUangComboBox.setValue("Orang Tua");
     }
 
-    /**
-     * Setup navigation event handlers
-     */
     private void setupNavigation() {
-        if (homeButton != null)
-            homeButton.setOnAction(e -> navigateToPage("Dashboard.fxml"));
-        if (profilButton != null)
-            profilButton.setOnAction(e -> navigateToPage("ProfilView.fxml"));
-        if (khsButton != null)
-            khsButton.setOnAction(e -> navigateToPage("KHSView.fxml"));
-        if (settingButton != null)
-            settingButton.setOnAction(e -> navigateToPage("SettingView.fxml"));
+        homeButton.setOnAction(e -> navigateTo("Dashboard.fxml"));
+        profilButton.setOnAction(e -> navigateTo("ProfilView.fxml"));
+        khsButton.setOnAction(e -> navigateTo("KHSView.fxml"));
+        settingButton.setOnAction(e -> navigateTo("SettingView.fxml"));
+        logoutButton.setOnAction(e -> handleLogout());
+        backButton.setOnAction(e -> handleBack());
     }
 
-    /**
-     * Setup real-time field validation
-     */
     private void setupFieldValidation() {
-        // NIK validation
-        if (nikField != null) {
-            nikField.textProperty().addListener((obs, oldVal, newVal) -> {
-                if (!newVal.matches("\\d*") || newVal.length() > NIK_LENGTH) {
-                    nikField.setText(oldVal);
-                }
-            });
-        }
-
-        // KK validation
-        if (noKKField != null) {
-            noKKField.textProperty().addListener((obs, oldVal, newVal) -> {
-                if (!newVal.matches("\\d*") || newVal.length() > KK_LENGTH) {
-                    noKKField.setText(oldVal);
-                }
-            });
-        }
-
-        // Phone number validation
-        if (noTeleponField != null) {
-            noTeleponField.textProperty().addListener((obs, oldVal, newVal) -> {
-                if (!newVal.matches("[0-9+\\-()\\s]*")) {
-                    noTeleponField.setText(oldVal);
-                }
-            });
-        }
+        setupNIKValidation();
+        setupKKValidation();
+        setupPhoneValidation();
     }
 
-    /**
-     * Load session data and validate user authentication
-     */
-    private void loadSessionData() {
-        currentUser = Session.getUser();
-        currentMahasiswa = Session.getMahasiswa();
+    private void setupNIKValidation() {
+        nikField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*") || newVal.length() > NIK_LENGTH) {
+                nikField.setText(oldVal);
+            }
+        });
+    }
 
-        if (currentUser == null) {
-            showAlert(Alert.AlertType.WARNING, "Session Expired", "Please login again.");
-            navigateToPage("Login.fxml");
+    private void setupKKValidation() {
+        noKKField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*") || newVal.length() > KK_LENGTH) {
+                noKKField.setText(oldVal);
+            }
+        });
+    }
+
+    private void setupPhoneValidation() {
+        noTeleponField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("[0-9+\\-()\\s]*")) {
+                noTeleponField.setText(oldVal);
+            }
+        });
+    }
+
+    // ================= DATA LOADING =================
+    private void loadSessionData() {
+        if (!isSessionValid()) {
+            redirectToLogin();
             return;
         }
 
         updateUILabels();
     }
 
-    /**
-     * Update UI labels with current user data
-     */
     private void updateUILabels() {
-        if (currentUser != null) {
-            setLabelText(namaMahasiswaLabel, currentUser.getNama());
-            setLabelText(namaProfilLabel, currentUser.getNama());
-            setLabelText(emailLabel, "Email: " + currentUser.getEmail());
-        }
-
-        if (currentMahasiswa != null) {
-            setLabelText(nimLabel, "NIM: " + currentMahasiswa.getNim());
-            setLabelText(jurusanLabel, "Jurusan: " +
-                    (currentMahasiswa.getJurusan() != null ? currentMahasiswa.getJurusan() : "-"));
-            setLabelText(prodiLabel, "Program Studi: " +
-                    (currentMahasiswa.getProdi() != null ? currentMahasiswa.getProdi() : "-"));
-        }
+        namaMahasiswaLabel.setText(currentUser.getNama());
+        namaProfilLabel.setText(currentUser.getNama());
+        emailLabel.setText("Email: " + currentUser.getEmail());
+        nimLabel.setText("NIM: " + currentMahasiswa.getNim());
+        jurusanLabel.setText("Jurusan: " + safeString(currentMahasiswa.getJurusan()));
+        prodiLabel.setText("Program Studi: " + safeString(currentMahasiswa.getProdi()));
     }
 
-    /**
-     * Helper method to safely set label text
-     */
-    private void setLabelText(Label label, String text) {
-        if (label != null && text != null) {
-            label.setText(text);
-        }
+    private String safeString(String value) {
+        return value != null ? value : "-";
     }
 
-    /**
-     * Populate form fields with current mahasiswa data
-     */
     private void populateFormData() {
-        if (currentMahasiswa == null)
+        if (!isSessionValid()) {
+            redirectToLogin();
             return;
+        }
 
-        try {
-            setTextFieldValue(nimField, currentMahasiswa.getNim());
-            setTextFieldValue(jurusanField, currentMahasiswa.getJurusan());
-            setTextFieldValue(prodiField, currentMahasiswa.getProdi());
-            setTextFieldValue(jalurSeleksiField, currentMahasiswa.getJalurSeleksi());
-            setTextFieldValue(asalSekolahField, currentMahasiswa.getAsalSekolah());
-            setTextFieldValue(alamatField, currentMahasiswa.getAlamat());
-            setTextFieldValue(kotaField, currentMahasiswa.getKota());
-            setTextFieldValue(provinsiField, currentMahasiswa.getProv());
-            setTextFieldValue(noTeleponField, currentMahasiswa.getNoTelp());
-            setTextFieldValue(tempatTinggalField, currentMahasiswa.getTempatTinggal());
-            setTextFieldValue(nikField, currentMahasiswa.getNik());
-            setTextFieldValue(noKKField, currentMahasiswa.getNoKk());
+        setTextFieldValues();
+        setComboBoxValues();
+        setDatePickerValue();
+    }
 
-            setComboBoxValue(agamaComboBox, currentMahasiswa.getAgama());
-            setComboBoxValue(jenisKelaminComboBox, currentMahasiswa.getJk());
-            setComboBoxValue(pendidikanAkhirComboBox, currentMahasiswa.getPendidikanAkhir());
-            setComboBoxValue(statusMenikahComboBox, currentMahasiswa.getStatusMenikah());
-            setComboBoxValue(sumberUangComboBox, currentMahasiswa.getSumberUang());
+    private void setTextFieldValues() {
+        nimField.setText(currentMahasiswa.getNim());
+        jurusanField.setText(currentMahasiswa.getJurusan());
+        prodiField.setText(currentMahasiswa.getProdi());
+        jalurSeleksiField.setText(currentMahasiswa.getJalurSeleksi());
+        asalSekolahField.setText(currentMahasiswa.getAsalSekolah());
+        alamatField.setText(currentMahasiswa.getAlamat());
+        kotaField.setText(currentMahasiswa.getKota());
+        provinsiField.setText(currentMahasiswa.getProv());
+        noTeleponField.setText(currentMahasiswa.getNoTelp());
+        tempatTinggalField.setText(currentMahasiswa.getTempatTinggal());
+        nikField.setText(currentMahasiswa.getNik());
+        noKKField.setText(currentMahasiswa.getNoKk());
+    }
 
-            if (ttlField != null && currentMahasiswa.getTtl() != null) {
-                ttlField.setValue(currentMahasiswa.getTtl().toLocalDate());
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error populating form data", e);
+    private void setComboBoxValues() {
+        kelasComboBox.setValue(currentMahasiswa.getKelas());
+        semesterComboBox.setValue(currentMahasiswa.getSemester());
+        agamaComboBox.setValue(currentMahasiswa.getAgama());
+        jenisKelaminComboBox.setValue(currentMahasiswa.getJk());
+        pendidikanAkhirComboBox.setValue(currentMahasiswa.getPendidikanAkhir());
+        statusMenikahComboBox.setValue(currentMahasiswa.getStatusMenikah());
+        sumberUangComboBox.setValue(currentMahasiswa.getSumberUang());
+    }
+
+    private void setDatePickerValue() {
+        if (currentMahasiswa.getTtl() != null) {
+            ttlField.setValue(currentMahasiswa.getTtl().toLocalDate());
         }
     }
 
-    /**
-     * Helper method to safely set TextField value
-     */
-    private void setTextFieldValue(TextField field, String value) {
-        if (field != null && value != null) {
-            field.setText(value);
-        }
-    }
-
-    /**
-     * Helper method to safely set ComboBox value
-     */
-    private void setComboBoxValue(ComboBox<String> comboBox, String value) {
-        if (comboBox != null && value != null) {
-            comboBox.setValue(value);
-        }
-    }
-
+    // ================= EVENT HANDLERS =================
     @FXML
     private void handleUploadPhoto() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Photo");
-        fileChooser.getExtensionFilters().add(
+        fileChooser.setTitle("Select Profile Photo");
+        fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"));
 
-        File file = fileChooser.showOpenDialog(uploadPhotoButton.getScene().getWindow());
-        if (file != null) {
+        File selectedFile = fileChooser.showOpenDialog(uploadPhotoButton.getScene().getWindow());
+        if (selectedFile != null) {
             try {
-                Image image = new Image(file.toURI().toString());
-                if (profileImageView != null) {
-                    profileImageView.setImage(image);
-                }
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Photo uploaded successfully.");
+                Image image = new Image(selectedFile.toURI().toString());
+                profileImageView.setImage(image);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Profile photo uploaded successfully.");
             } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Error loading photo", e);
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to load photo: " + e.getMessage());
+                LOGGER.log(Level.WARNING, "Error loading profile photo", e);
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to load profile photo: " + e.getMessage());
             }
         }
-    }
-
-    @FXML
-    private void handleBack(ActionEvent event) {
-        navigateToPage("ProfilView.fxml");
     }
 
     @FXML
     private void handleSimpan() {
+        if (!isSessionValid()) {
+            redirectToLogin();
+            return;
+        }
+
         if (!validateForm()) {
             return;
         }
 
         try {
             MahasiswaModel updatedMahasiswa = createMahasiswaFromForm();
-            updateMahasiswaInDatabase(updatedMahasiswa);
+            saveMahasiswaData(updatedMahasiswa);
 
-            // Update session with new data
             Session.setMahasiswa(updatedMahasiswa);
-
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Data saved successfully.");
-            navigateToPage("ProfilView.fxml");
-
+            showAlertAndNavigate("Success", "Data saved successfully.", "ProfilView.fxml");
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Database error while saving", e);
-            showAlert(Alert.AlertType.ERROR, "Database Error",
-                    "Failed to save data to database: " + e.getMessage());
+            handleDatabaseError(e);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error while saving", e);
-            showAlert(Alert.AlertType.ERROR, "Error",
-                    "An unexpected error occurred: " + e.getMessage());
+            handleUnexpectedError(e);
         }
     }
 
-    /**
-     * Create MahasiswaModel from form data
-     */
-    private MahasiswaModel createMahasiswaFromForm() {
-        MahasiswaModel mahasiswa = new MahasiswaModel();
+    @FXML
+    private void handleBack() {
+        showConfirmationDialog("Cancel Changes", "Unsaved changes will be lost. Continue?",
+                () -> navigateTo("ProfilView.fxml"));
+    }
 
-        mahasiswa.setNim(getTextFieldValue(nimField));
-        mahasiswa.setJurusan(getTextFieldValue(jurusanField));
-        mahasiswa.setProdi(getTextFieldValue(prodiField));
-        mahasiswa.setJalurSeleksi(getTextFieldValue(jalurSeleksiField));
-        mahasiswa.setAsalSekolah(getTextFieldValue(asalSekolahField));
-        mahasiswa.setAlamat(getTextFieldValue(alamatField));
-        mahasiswa.setKota(getTextFieldValue(kotaField));
-        mahasiswa.setProv(getTextFieldValue(provinsiField));
-        mahasiswa.setNoTelp(getTextFieldValue(noTeleponField));
-        mahasiswa.setTempatTinggal(getTextFieldValue(tempatTinggalField));
-        mahasiswa.setNik(getTextFieldValue(nikField));
-        mahasiswa.setNoKk(getTextFieldValue(noKKField));
+    @FXML
+    private void handleLogout() {
+        showConfirmationDialog("Logout", "Are you sure you want to logout?",
+                () -> {
+                    Session.clear();
+                    navigateTo("Login.fxml");
+                });
+    }
 
-        mahasiswa.setAgama(getComboBoxValue(agamaComboBox));
-        mahasiswa.setJk(getComboBoxValue(jenisKelaminComboBox));
-        mahasiswa.setPendidikanAkhir(getComboBoxValue(pendidikanAkhirComboBox));
-        mahasiswa.setStatusMenikah(getComboBoxValue(statusMenikahComboBox));
-        mahasiswa.setSumberUang(getComboBoxValue(sumberUangComboBox));
+    @FXML
+    private void handleBatal() {
+        handleBack();
+    }
 
-        if (ttlField != null && ttlField.getValue() != null) {
-            mahasiswa.setTtl(java.sql.Date.valueOf(ttlField.getValue()));
+    // ================= DATABASE OPERATIONS =================
+    private void saveMahasiswaData(MahasiswaModel mahasiswa) throws SQLException {
+        if (!isSessionValid()) {
+            throw new SQLException("Invalid session state");
         }
-
-        return mahasiswa;
-    }
-
-    /**
-     * Helper method to safely get TextField value
-     */
-    private String getTextFieldValue(TextField field) {
-        return (field != null && field.getText() != null) ? field.getText().trim() : "";
-    }
-
-    /**
-     * Helper method to safely get ComboBox value
-     */
-    private String getComboBoxValue(ComboBox<String> comboBox) {
-        return (comboBox != null) ? comboBox.getValue() : null;
-    }
-
-    /**
-     * Update mahasiswa data in database
-     */
-    private void updateMahasiswaInDatabase(MahasiswaModel mahasiswa) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM mahasiswa WHERE nim = ?";
-        String updateSql = """
-                UPDATE mahasiswa SET
-                    jurusan=?, prodi=?, jalur_seleksi=?, asal_sekolah=?, ttl=?,
-                    agama=?, jk=?, alamat=?, kota=?, prov=?, no_telp=?,
-                    pendidikan_akhir=?, status_menikah=?, tempat_tinggal=?,
-                    sumber_uang=?, nik=?, no_kk=?
-                WHERE nim=?
-                """;
-        String insertSql = """
-                INSERT INTO mahasiswa
-                    (nim, jurusan, prodi, jalur_seleksi, asal_sekolah, ttl, agama, jk,
-                     alamat, kota, prov, no_telp, pendidikan_akhir, status_menikah,
-                     tempat_tinggal, sumber_uang, nik, no_kk, id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
 
         try (Connection conn = Koneksi.getConnection()) {
             conn.setAutoCommit(false);
 
-            try {
-                boolean exists = checkRecordExists(conn, checkSql, mahasiswa.getNim());
-
-                if (exists) {
-                    executeUpdate(conn, updateSql, mahasiswa);
-                } else {
-                    executeInsert(conn, insertSql, mahasiswa);
-                }
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
+            if (mahasiswaExists(conn, mahasiswa.getNim())) {
+                updateMahasiswa(conn, mahasiswa);
+            } else {
+                insertMahasiswa(conn, mahasiswa);
             }
+
+            conn.commit();
         }
     }
 
-    /**
-     * Check if mahasiswa record exists
-     */
-    private boolean checkRecordExists(Connection conn, String sql, String nim) throws SQLException {
+    private boolean mahasiswaExists(Connection conn, String nim) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM mahasiswa WHERE nim = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nim);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -504,216 +413,243 @@ public class ProfileUpdateController implements Initializable {
         }
     }
 
-    /**
-     * Execute update statement
-     */
-    private void executeUpdate(Connection conn, String sql, MahasiswaModel mahasiswa) throws SQLException {
+    private void updateMahasiswa(Connection conn, MahasiswaModel mahasiswa) throws SQLException {
+        String sql = """
+                UPDATE mahasiswa SET
+                    kelas=?, jurusan=?, prodi=?, jalur_seleksi=?, asal_sekolah=?, ttl=?,
+                    agama=?, jk=?, alamat=?, kota=?, prov=?, no_telp=?,
+                    pendidikan_akhir=?, status_menikah=?, tempat_tinggal=?,
+                    sumber_uang=?, nik=?, no_kk=?, semester=?
+                WHERE nim=?
+                """;
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            setMahasiswaParameters(stmt, mahasiswa, false);
-            stmt.setString(18, mahasiswa.getNim()); // WHERE clause
+            int paramIndex = 1;
+            stmt.setString(paramIndex++, mahasiswa.getKelas());
+            stmt.setString(paramIndex++, mahasiswa.getJurusan());
+            stmt.setString(paramIndex++, mahasiswa.getProdi());
+            stmt.setString(paramIndex++, mahasiswa.getJalurSeleksi());
+            stmt.setString(paramIndex++, mahasiswa.getAsalSekolah());
+            stmt.setDate(paramIndex++, mahasiswa.getTtl());
+            stmt.setString(paramIndex++, mahasiswa.getAgama());
+            stmt.setString(paramIndex++, mahasiswa.getJk());
+            stmt.setString(paramIndex++, mahasiswa.getAlamat());
+            stmt.setString(paramIndex++, mahasiswa.getKota());
+            stmt.setString(paramIndex++, mahasiswa.getProv());
+            stmt.setString(paramIndex++, mahasiswa.getNoTelp());
+            stmt.setString(paramIndex++, mahasiswa.getPendidikanAkhir());
+            stmt.setString(paramIndex++, mahasiswa.getStatusMenikah());
+            stmt.setString(paramIndex++, mahasiswa.getTempatTinggal());
+            stmt.setString(paramIndex++, mahasiswa.getSumberUang());
+            stmt.setString(paramIndex++, mahasiswa.getNik());
+            stmt.setString(paramIndex++, mahasiswa.getNoKk());
+            stmt.setInt(paramIndex++, mahasiswa.getSemester());
+            stmt.setString(paramIndex++, mahasiswa.getNim());
+
             stmt.executeUpdate();
         }
     }
 
-    /**
-     * Execute insert statement
-     */
-    private void executeInsert(Connection conn, String sql, MahasiswaModel mahasiswa) throws SQLException {
+    private void insertMahasiswa(Connection conn, MahasiswaModel mahasiswa) throws SQLException {
+        String sql = """
+                INSERT INTO mahasiswa
+                    (nim, kelas, jurusan, prodi, jalur_seleksi, asal_sekolah, ttl, agama, jk,
+                     alamat, kota, prov, no_telp, pendidikan_akhir, status_menikah,
+                     tempat_tinggal, sumber_uang, nik, no_kk, semester, id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            setMahasiswaParameters(stmt, mahasiswa, true);
+            int paramIndex = 1;
+            stmt.setString(paramIndex++, mahasiswa.getNim());
+            stmt.setString(paramIndex++, mahasiswa.getKelas());
+            stmt.setString(paramIndex++, mahasiswa.getJurusan());
+            stmt.setString(paramIndex++, mahasiswa.getProdi());
+            stmt.setString(paramIndex++, mahasiswa.getJalurSeleksi());
+            stmt.setString(paramIndex++, mahasiswa.getAsalSekolah());
+            stmt.setDate(paramIndex++, mahasiswa.getTtl());
+            stmt.setString(paramIndex++, mahasiswa.getAgama());
+            stmt.setString(paramIndex++, mahasiswa.getJk());
+            stmt.setString(paramIndex++, mahasiswa.getAlamat());
+            stmt.setString(paramIndex++, mahasiswa.getKota());
+            stmt.setString(paramIndex++, mahasiswa.getProv());
+            stmt.setString(paramIndex++, mahasiswa.getNoTelp());
+            stmt.setString(paramIndex++, mahasiswa.getPendidikanAkhir());
+            stmt.setString(paramIndex++, mahasiswa.getStatusMenikah());
+            stmt.setString(paramIndex++, mahasiswa.getTempatTinggal());
+            stmt.setString(paramIndex++, mahasiswa.getSumberUang());
+            stmt.setString(paramIndex++, mahasiswa.getNik());
+            stmt.setString(paramIndex++, mahasiswa.getNoKk());
+            stmt.setInt(paramIndex++, mahasiswa.getSemester());
+            stmt.setInt(paramIndex++, Session.getUser().getId());
+
             stmt.executeUpdate();
         }
     }
 
-    /**
-     * Set parameters for mahasiswa prepared statement
-     */
-    private void setMahasiswaParameters(PreparedStatement stmt, MahasiswaModel m, boolean isInsert)
-            throws SQLException {
-        int idx = 1;
-
-        if (isInsert) {
-            stmt.setString(idx++, m.getNim());
-        }
-
-        stmt.setString(idx++, m.getJurusan());
-        stmt.setString(idx++, m.getProdi());
-        stmt.setString(idx++, m.getJalurSeleksi());
-        stmt.setString(idx++, m.getAsalSekolah());
-        stmt.setDate(idx++, m.getTtl());
-        stmt.setString(idx++, m.getAgama());
-        stmt.setString(idx++, m.getJk());
-        stmt.setString(idx++, m.getAlamat());
-        stmt.setString(idx++, m.getKota());
-        stmt.setString(idx++, m.getProv());
-        stmt.setString(idx++, m.getNoTelp());
-        stmt.setString(idx++, m.getPendidikanAkhir());
-        stmt.setString(idx++, m.getStatusMenikah());
-        stmt.setString(idx++, m.getTempatTinggal());
-        stmt.setString(idx++, m.getSumberUang());
-        stmt.setString(idx++, m.getNik());
-        stmt.setString(idx++, m.getNoKk());
-
-        if (isInsert) {
-            stmt.setInt(idx++, Session.getUser().getId());
-        }
-    }
-
-    @FXML
-    private void handleBatal() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Cancel changes?");
-        alert.setContentText("Unsaved data will be lost.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            navigateToPage("ProfilView.fxml");
-        }
-    }
-
-    @FXML
-    private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("Sign out from account?");
-        alert.setContentText("Are you sure you want to logout?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            Session.clear();
-            navigateToPage("Login.fxml");
-        }
-    }
-
-    /**
-     * Comprehensive form validation
-     */
+    // ================= VALIDATION =================
     private boolean validateForm() {
         List<String> errors = new ArrayList<>();
 
         validateRequiredFields(errors);
-        validateDataFormats(errors);
-        validateBusinessRules(errors);
+        validateFieldFormats(errors);
+        validateSemester(errors);
 
         if (!errors.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation Failed", String.join("\n", errors));
+            showAlert(Alert.AlertType.WARNING, "Validation Errors", String.join("\n", errors));
             return false;
         }
-
         return true;
     }
 
-    /**
-     * Validate required fields
-     */
     private void validateRequiredFields(List<String> errors) {
-        if (isFieldEmpty(nimField)) {
-            errors.add("NIM must be filled.");
-        }
-
-        if (ttlField == null || ttlField.getValue() == null) {
-            errors.add("Birth date must be filled.");
-        }
-
-        if (getComboBoxValue(agamaComboBox) == null) {
-            errors.add("Religion must be selected.");
-        }
-
-        if (getComboBoxValue(jenisKelaminComboBox) == null) {
-            errors.add("Gender must be selected.");
-        }
-
-        if (isFieldEmpty(alamatField)) {
-            errors.add("Address must be filled.");
-        }
-
-        if (isFieldEmpty(kotaField)) {
-            errors.add("City must be filled.");
-        }
-
-        if (isFieldEmpty(provinsiField)) {
-            errors.add("Province must be filled.");
-        }
+        if (isFieldEmpty(nimField))
+            errors.add("NIM is required");
+        if (isFieldEmpty(jurusanField))
+            errors.add("Jurusan is required");
+        if (isFieldEmpty(prodiField))
+            errors.add("Program Studi is required");
+        if (isFieldEmpty(alamatField))
+            errors.add("Alamat is required");
+        if (isFieldEmpty(kotaField))
+            errors.add("Kota is required");
+        if (isFieldEmpty(provinsiField))
+            errors.add("Provinsi is required");
+        if (ttlField.getValue() == null)
+            errors.add("Tanggal Lahir is required");
+        if (agamaComboBox.getValue() == null)
+            errors.add("Agama is required");
+        if (jenisKelaminComboBox.getValue() == null)
+            errors.add("Jenis Kelamin is required");
+        if (semesterComboBox.getValue() == null)
+            errors.add("Semester is required");
     }
 
-    /**
-     * Validate data formats
-     */
-    private void validateDataFormats(List<String> errors) {
-        String nik = getTextFieldValue(nikField);
-        if (!nik.isEmpty() && (nik.length() != NIK_LENGTH || !nik.matches("\\d{16}"))) {
-            errors.add("NIK must be exactly 16 digits.");
-        }
-
-        String noKK = getTextFieldValue(noKKField);
-        if (!noKK.isEmpty() && (noKK.length() != KK_LENGTH || !noKK.matches("\\d{16}"))) {
-            errors.add("Family Card number must be exactly 16 digits.");
-        }
-
-        String noTelp = getTextFieldValue(noTeleponField);
-        if (!noTelp.isEmpty() && !noTelp.matches("[0-9+\\-()\\s]+")) {
-            errors.add("Phone number format is invalid.");
-        }
-    }
-
-    /**
-     * Validate business rules
-     */
-    private void validateBusinessRules(List<String> errors) {
-        if (ttlField != null && ttlField.getValue() != null) {
-            if (ttlField.getValue().isAfter(LocalDate.now())) {
-                errors.add("Birth date cannot be in the future.");
+    private void validateFieldFormats(List<String> errors) {
+        if (!isFieldEmpty(nikField)) {
+            String nik = nikField.getText().trim();
+            if (nik.length() != NIK_LENGTH || !nik.matches("\\d+")) {
+                errors.add("NIK must be 16 digits");
             }
+        }
 
-            if (ttlField.getValue().isBefore(LocalDate.now().minusYears(100))) {
-                errors.add("Birth date seems unrealistic.");
+        if (!isFieldEmpty(noKKField)) {
+            String noKK = noKKField.getText().trim();
+            if (noKK.length() != KK_LENGTH || !noKK.matches("\\d+")) {
+                errors.add("No KK must be 16 digits");
+            }
+        }
+
+        if (!isFieldEmpty(noTeleponField)) {
+            String noTelp = noTeleponField.getText().trim();
+            if (!noTelp.matches("[0-9+\\-()\\s]{8,15}")) {
+                errors.add("Nomor Telepon format is invalid");
             }
         }
     }
 
-    /**
-     * Check if text field is empty
-     */
+    private void validateSemester(List<String> errors) {
+        if (semesterComboBox.getValue() == null) {
+            errors.add("Semester is required");
+        } else if (semesterComboBox.getValue() < 1 || semesterComboBox.getValue() > MAX_SEMESTER) {
+            errors.add("Semester must be between 1 and " + MAX_SEMESTER);
+        }
+    }
+
     private boolean isFieldEmpty(TextField field) {
-        return field == null || field.getText() == null || field.getText().trim().isEmpty();
+        return field.getText() == null || field.getText().trim().isEmpty();
     }
 
-    /**
-     * Navigate to specified FXML page
-     */
-    private void navigateToPage(String fxml) {
+    // ================= UTILITY METHODS =================
+    private MahasiswaModel createMahasiswaFromForm() {
+        MahasiswaModel mahasiswa = new MahasiswaModel();
+
+        // Set fields from form
+        mahasiswa.setNim(nimField.getText().trim());
+        mahasiswa.setJurusan(jurusanField.getText().trim());
+        mahasiswa.setProdi(prodiField.getText().trim());
+        mahasiswa.setJalurSeleksi(jalurSeleksiField.getText().trim());
+        mahasiswa.setAsalSekolah(asalSekolahField.getText().trim());
+        mahasiswa.setAlamat(alamatField.getText().trim());
+        mahasiswa.setKota(kotaField.getText().trim());
+        mahasiswa.setProv(provinsiField.getText().trim());
+        mahasiswa.setNoTelp(noTeleponField.getText().trim());
+        mahasiswa.setTempatTinggal(tempatTinggalField.getText().trim());
+        mahasiswa.setNik(nikField.getText().trim());
+        mahasiswa.setNoKk(noKKField.getText().trim());
+
+        // Set combo box values
+        mahasiswa.setKelas(kelasComboBox.getValue());
+        mahasiswa.setAgama(agamaComboBox.getValue());
+        mahasiswa.setJk(jenisKelaminComboBox.getValue());
+        mahasiswa.setPendidikanAkhir(pendidikanAkhirComboBox.getValue());
+        mahasiswa.setStatusMenikah(statusMenikahComboBox.getValue());
+        mahasiswa.setSumberUang(sumberUangComboBox.getValue());
+        mahasiswa.setSemester(semesterComboBox.getValue());
+
+        // Set date
+        if (ttlField.getValue() != null) {
+            mahasiswa.setTtl(java.sql.Date.valueOf(ttlField.getValue()));
+        }
+
+        return mahasiswa;
+    }
+
+    private void navigateTo(String fxml) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/sinilai/view/" + fxml));
-            Stage stage = getCurrentStage();
-            if (stage != null) {
-                stage.setScene(new Scene(root));
+            if (!isSessionValid()) {
+                redirectToLogin();
+                return;
             }
+
+            Parent root = FXMLLoader.load(getClass().getResource("/com/sinilai/view/" + fxml));
+            Stage stage = (Stage) simpanButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Navigation failed to " + fxml, e);
-            showAlert(Alert.AlertType.ERROR, "Navigation Failed",
-                    "Failed to open page: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Navigation error", e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load page: " + e.getMessage());
         }
     }
 
-    /**
-     * Get current stage from any component
-     */
-    private Stage getCurrentStage() {
-        if (simpanButton != null && simpanButton.getScene() != null) {
-            return (Stage) simpanButton.getScene().getWindow();
-        }
-        return null;
-    }
-
-    /**
-     * Show alert dialog with specified parameters
-     */
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void showAlertAndNavigate(String title, String message, String fxml) {
+        showAlert(Alert.AlertType.INFORMATION, title, message);
+        navigateTo(fxml);
+    }
+
+    private void showConfirmationDialog(String title, String message, Runnable onConfirm) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            onConfirm.run();
+        }
+    }
+
+    // ================= ERROR HANDLING =================
+    private void handleInitializationError(Exception e) {
+        LOGGER.log(Level.SEVERE, "Initialization error", e);
+        showAlert(Alert.AlertType.ERROR, "Initialization Error",
+                "Failed to initialize controller: " + e.getMessage());
+    }
+
+    private void handleDatabaseError(SQLException e) {
+        LOGGER.log(Level.SEVERE, "Database error", e);
+        showAlert(Alert.AlertType.ERROR, "Database Error",
+                "Failed to save data: " + e.getMessage());
+    }
+
+    private void handleUnexpectedError(Exception e) {
+        LOGGER.log(Level.SEVERE, "Unexpected error", e);
+        showAlert(Alert.AlertType.ERROR, "Error",
+                "An unexpected error occurred: " + e.getMessage());
     }
 }

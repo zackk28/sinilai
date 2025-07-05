@@ -95,11 +95,7 @@ public class LoginController {
             UserModel user = loginUser(email, password);
             if (user != null) {
                 showAlert(Alert.AlertType.INFORMATION, "Sukses", "Login berhasil! Selamat datang, " + user.getNama());
-                if (!"mahasiswa".equalsIgnoreCase(user.getRole())) {
-                    showAlert(Alert.AlertType.ERROR, "Gagal", "Akun ini bukan mahasiswa.");
-                    return;
-                }
-                openDashboard(user);
+                openDashboard(user); // Langsung panggil openDashboard untuk handle role di sana
             } else {
                 showAlert(Alert.AlertType.ERROR, "Gagal", "Email atau Password salah!");
                 passwordField.clear();
@@ -162,27 +158,50 @@ public class LoginController {
 
     private void openDashboard(UserModel user) {
         try {
-            MahasiswaModel mahasiswa = findMahasiswaByUserId(user.getId());
-
-            // Set session
-            setSession(user, mahasiswa);
-
-            // Load halaman dashboard
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            // Kirim user & mahasiswa ke controller
-            DashboardController controller = loader.getController();
-            if (mahasiswa != null) {
-                controller.setMahasiswa(mahasiswa, user);
-            }
-
-            // Tampilkan scene
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setTitle("Dashboard - SINILAI");
-            stage.setScene(scene);
-            stage.setMaximized(true);
-            stage.show();
+
+            if (user.getRole().equalsIgnoreCase("mahasiswa")) {
+                // Cari data mahasiswa dari user_id
+                MahasiswaModel mahasiswa = findMahasiswaByUserId(user.getId());
+
+                // Set session
+                setSession(user, mahasiswa);
+
+                // Load halaman dashboard mahasiswa
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DashboardView.fxml"));
+                Scene scene = new Scene(loader.load());
+
+                // Kirim user & mahasiswa ke controller
+                DashboardController controller = loader.getController();
+                if (mahasiswa != null) {
+                    controller.setMahasiswa(mahasiswa, user);
+                }
+
+                stage.setTitle("Dashboard Mahasiswa - SINILAI");
+                stage.setScene(scene);
+                stage.setMaximized(true);
+                stage.show();
+
+            } else if (user.getRole().equalsIgnoreCase("dosen")) {
+                // Set session hanya dengan user
+                setSession(user, null);
+
+                // Load halaman dashboard dosen
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sinilai/view/DosenDashboard.fxml"));
+                Scene scene = new Scene(loader.load());
+
+                // Kirim user ke controller dosen
+                DashboardDosenController controller = loader.getController();
+                controller.setUser(user);
+
+                stage.setTitle("Dashboard Dosen - SINILAI");
+                stage.setScene(scene);
+                stage.setMaximized(true);
+                stage.show();
+
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Role Tidak Dikenal", "Role pengguna tidak valid: " + user.getRole());
+            }
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Gagal membuka dashboard: " + e.getMessage());

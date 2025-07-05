@@ -14,6 +14,7 @@ public class MahasiswaModel {
 
     private int id;
     private String nim;
+    private String kelas;
     private String jurusan;
     private String prodi;
     private String jalurSeleksi;
@@ -32,7 +33,6 @@ public class MahasiswaModel {
     private String sumberUang;
     private String nik;
     private String noKk;
-
     private UserModel user;
 
     // Constructors
@@ -60,6 +60,10 @@ public class MahasiswaModel {
 
     public String getNim() {
         return nim;
+    }
+
+    public String getKelas() {
+        return kelas;
     }
 
     public String getJurusan() {
@@ -148,6 +152,10 @@ public class MahasiswaModel {
         } else {
             this.nim = null;
         }
+    }
+
+    public void setKelas(String kelas) {
+        this.kelas = sanitizeString(kelas);
     }
 
     public void setJurusan(String jurusan) {
@@ -308,7 +316,7 @@ public class MahasiswaModel {
 
         String sql = """
                     UPDATE mahasiswa SET
-                        nim=?, jurusan=?, prodi=?, semester=?, jalur_seleksi=?,
+                        nim=?, jurusan=?, kelas=?, prodi=?, semester=?, jalur_seleksi=?,
                         asal_sekolah=?, ttl=?, agama=?, jk=?, alamat=?,
                         kota=?, prov=?, no_telp=?, pendidikan_akhir=?, status_menikah=?,
                         tempat_tinggal=?, sumber_uang=?, nik=?, no_kk=?
@@ -354,25 +362,26 @@ public class MahasiswaModel {
      */
     private void setUpdateParameters(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, nim);
-        stmt.setString(2, jurusan);
-        stmt.setString(3, prodi);
-        stmt.setInt(4, semester);
-        stmt.setString(5, jalurSeleksi);
-        stmt.setString(6, asalSekolah);
-        stmt.setDate(7, ttl);
-        stmt.setString(8, agama);
-        stmt.setString(9, jk);
-        stmt.setString(10, alamat);
-        stmt.setString(11, kota);
-        stmt.setString(12, prov);
-        stmt.setString(13, noTelp);
-        stmt.setString(14, pendidikanAkhir);
-        stmt.setString(15, statusMenikah);
-        stmt.setString(16, tempatTinggal);
-        stmt.setString(17, sumberUang);
-        stmt.setString(18, nik);
-        stmt.setString(19, noKk);
-        stmt.setInt(20, id);
+        stmt.setString(2, kelas);
+        stmt.setString(3, jurusan);
+        stmt.setString(4, prodi);
+        stmt.setInt(5, semester);
+        stmt.setString(6, jalurSeleksi);
+        stmt.setString(7, asalSekolah);
+        stmt.setDate(8, ttl);
+        stmt.setString(9, agama);
+        stmt.setString(10, jk);
+        stmt.setString(11, alamat);
+        stmt.setString(12, kota);
+        stmt.setString(13, prov);
+        stmt.setString(14, noTelp);
+        stmt.setString(15, pendidikanAkhir);
+        stmt.setString(16, statusMenikah);
+        stmt.setString(17, tempatTinggal);
+        stmt.setString(18, sumberUang);
+        stmt.setString(19, nik);
+        stmt.setString(20, noKk);
+        stmt.setInt(21, id);
     }
 
     public boolean loadMahasiswaFromDB(int id) {
@@ -386,6 +395,7 @@ public class MahasiswaModel {
             if (rs.next()) {
                 this.id = rs.getInt("id");
                 this.nim = rs.getString("nim");
+                this.kelas = rs.getString("kelas");
                 this.jurusan = rs.getString("jurusan");
                 this.prodi = rs.getString("prodi");
                 this.jalurSeleksi = rs.getString("jalur_seleksi");

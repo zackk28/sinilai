@@ -217,18 +217,28 @@
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
                   GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                <Label text="Jurusan:" textFill="#333333" GridPane.columnIndex="2"
+                <Label text="Kelas:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="0">
+                  <font>
+                    <Font name="System Bold" size="14.0" />
+                  </font>
+                </Label>
+                <ComboBox fx:id="kelasComboBox" prefWidth="300.0"
+                  style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
+                  GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                <!-- Row 1 -->
+                <Label text="Jurusan:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="1">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="jurusanField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <!-- Row 1 -->
-                <Label text="Program Studi:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Program Studi:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="1">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -236,20 +246,20 @@
                 </Label>
                 <TextField fx:id="prodiField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-                <Label text="Semester:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="1">
+                <!-- Row 2 -->
+                <Label text="Semester:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="2">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <ComboBox fx:id="semesterComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <!-- Row 2 -->
-                <Label text="Jalur Seleksi:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Jalur Seleksi:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="2">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -257,20 +267,20 @@
                 </Label>
                 <TextField fx:id="jalurSeleksiField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="2" />
 
-                <Label text="Asal Sekolah:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="2">
+                <!-- Row 3 -->
+                <Label text="Asal Sekolah:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="3">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="asalSekolahField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                <!-- Row 3 -->
-                <Label text="Tgl Lahir:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Tgl Lahir:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="3">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -278,20 +288,20 @@
                 </Label>
                 <DatePicker fx:id="ttlField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="3" />
 
-                <Label text="Agama:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="3">
+                <!-- Row 4 -->
+                <Label text="Agama:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="4">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <ComboBox fx:id="agamaComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                <!-- Row 4 -->
-                <Label text="Jenis Kelamin:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Jenis Kelamin:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="4">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -299,20 +309,20 @@
                 </Label>
                 <ComboBox fx:id="jenisKelaminComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="4" />
 
-                <Label text="Alamat:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="4">
+                <!-- Row 5 -->
+                <Label text="Alamat:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="5">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="alamatField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                <!-- Row 5 -->
-                <Label text="Kota:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Kota:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="5">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -320,20 +330,20 @@
                 </Label>
                 <TextField fx:id="kotaField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="5" />
 
-                <Label text="Provinsi:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="5">
+                <!-- Row 6 -->
+                <Label text="Provinsi:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="6">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="provinsiField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                <!-- Row 6 -->
-                <Label text="No. Telepon:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="No. Telepon:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="6">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -341,20 +351,20 @@
                 </Label>
                 <TextField fx:id="noTeleponField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="6" />
 
-                <Label text="Pendidikan Akhir:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="6">
+                <!-- Row 7 -->
+                <Label text="Pendidikan Akhir:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="7">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <ComboBox fx:id="pendidikanAkhirComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
-                <!-- Row 7 -->
-                <Label text="Status Menikah:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Status Menikah:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="7">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -362,20 +372,20 @@
                 </Label>
                 <ComboBox fx:id="statusMenikahComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="7" />
 
-                <Label text="Status Tempat Tinggal:" textFill="#333333" GridPane.columnIndex="2"
-                  GridPane.rowIndex="7">
+                <!-- Row 8 -->
+                <Label text="Status Tempat Tinggal:" textFill="#333333" GridPane.columnIndex="0"
+                  GridPane.rowIndex="8">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="tempatTinggalField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="8" />
 
-                <!-- Row 8 -->
-                <Label text="Sumber Uang Sekolah:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Sumber Uang Sekolah:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="8">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -383,19 +393,19 @@
                 </Label>
                 <ComboBox fx:id="sumberUangComboBox" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="8" />
 
-                <Label text="NIK:" textFill="#333333" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                <!-- Row 9 -->
+                <Label text="NIK:" textFill="#333333" GridPane.columnIndex="0" GridPane.rowIndex="9">
                   <font>
                     <Font name="System Bold" size="14.0" />
                   </font>
                 </Label>
                 <TextField fx:id="nikField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="3" GridPane.rowIndex="8" />
+                  GridPane.columnIndex="1" GridPane.rowIndex="9" />
 
-                <!-- Row 9 -->
-                <Label text="Nomor KK:" textFill="#333333" GridPane.columnIndex="0"
+                <Label text="Nomor KK:" textFill="#333333" GridPane.columnIndex="2"
                   GridPane.rowIndex="9">
                   <font>
                     <Font name="System Bold" size="14.0" />
@@ -403,7 +413,7 @@
                 </Label>
                 <TextField fx:id="noKKField" prefWidth="300.0"
                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 8;"
-                  GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  GridPane.columnIndex="3" GridPane.rowIndex="9" />
               </children>
 
               <columnConstraints>

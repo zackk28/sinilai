@@ -27,6 +27,9 @@ public class RegisterController {
     private PasswordField passwordField;
 
     @FXML
+    private ComboBox<String> roleComboBox;
+
+    @FXML
     private Button registerButton;
 
     @FXML
@@ -43,6 +46,7 @@ public class RegisterController {
         String nama = usernameField.getText().trim();
         String email = emailField.getText().trim();
         String password = passwordField.getText();
+        String role = roleComboBox.getValue(); // Assuming you have a ComboBox for role selection
 
         if (!validateInput(nama, email, password))
             return;
@@ -56,7 +60,7 @@ public class RegisterController {
         user.setNama(nama);
         user.setEmail(email);
         user.setPassword(password);
-        user.setRole("mahasiswa"); // default role
+        user.setRole(role); // default role
 
         if (registerUser(user)) {
             showAlert(Alert.AlertType.INFORMATION, "Sukses", "Registrasi berhasil! Silakan login.");

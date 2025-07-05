@@ -361,6 +361,7 @@ public class ProfilController implements Initializable {
         try {
             currentMahasiswa.setId(rs.getInt("id"));
             currentMahasiswa.setNim(rs.getString("nim"));
+            currentMahasiswa.setKelas(rs.getString("kelas"));
             currentMahasiswa.setJurusan(rs.getString("jurusan"));
             currentMahasiswa.setProdi(rs.getString("prodi"));
 
@@ -467,6 +468,7 @@ public class ProfilController implements Initializable {
 
         if (currentMahasiswa != null) {
             dataMap.put("NIM", safe(currentMahasiswa.getNim()));
+            dataMap.put("kelas", safe(currentMahasiswa.getKelas()));
             dataMap.put("Jurusan", safe(currentMahasiswa.getJurusan()));
             dataMap.put("Program Studi", safe(currentMahasiswa.getProdi()));
             dataMap.put("Semester", String.valueOf(currentMahasiswa.getSemester()));
